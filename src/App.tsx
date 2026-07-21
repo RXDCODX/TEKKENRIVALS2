@@ -47,35 +47,48 @@ const AppContent: React.FC = () => {
         {/* Easter egg at the very bottom */}
         <div className='easter-egg'>
           <div className='easter-egg__content'>
-            <div className='easter-egg__author'>
+            <div className='easter-egg__avatars'>
               <a
                 href='https://twitch.tv/avicii75'
                 target='_blank'
                 rel='noopener noreferrer'
-                className='easter-egg__link'
+                className='easter-egg__avatar-link'
               >
                 <img
                   src='/avicii75.webp'
                   alt='AVICII75'
                   className='easter-egg__avatar'
                 />
-                <span className='easter-egg__name'>twitch.tv/avicii75</span>
               </a>
-            </div>
-
-            <div className='easter-egg__author'>
               <a
                 href='https://github.com/rxdcodx'
                 target='_blank'
                 rel='noopener noreferrer'
-                className='easter-egg__link'
+                className='easter-egg__avatar-link'
               >
                 <img
                   src='https://avatars.githubusercontent.com/u/88150316'
                   alt='RXDCODX'
                   className='easter-egg__avatar'
                 />
-                <span className='easter-egg__name'>github.com/rxdcodx</span>
+              </a>
+            </div>
+            <div className='easter-egg__links'>
+              <a
+                href='https://twitch.tv/avicii75'
+                target='_blank'
+                rel='noopener noreferrer'
+                className='easter-egg__text-link'
+              >
+                twitch.tv/avicii75
+              </a>
+              <a
+                href='https://github.com/rxdcodx'
+                target='_blank'
+                rel='noopener noreferrer'
+                className='easter-egg__text-link'
+              >
+                github.com/rxdcodx
               </a>
             </div>
           </div>
