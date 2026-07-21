@@ -1,0 +1,113 @@
+// Variables
+$bg-color: #000000;
+$text-color: #ffffff;
+$accent-color: #ff0000;
+
+// Reset
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+body {
+  background-color: $bg-color;
+  color: $text-color;
+  font-family: 'Roboto', sans-serif;
+  overflow-x: hidden;
+}
+
+// Logo container — fixed in center
+.logo-container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  pointer-events: none;
+
+  .logo {
+    max-width: 60vw;
+    max-height: 60vh;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 0 20px rgba(255, 0, 0, 0.3));
+  }
+}
+
+// Scroll container
+.scroll-container {
+  height: 20000vh;
+  position: relative;
+}
+
+// Easter egg at the bottom
+.easter-egg {
+  position: absolute;
+  bottom: 100px;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  opacity: 0.15;
+  transition: opacity 0.5s ease;
+
+  &:hover {
+    opacity: 1;
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+  }
+
+  &__author {
+    display: flex;
+    align-items: center;
+  }
+
+  &__link {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    text-decoration: none;
+    color: $text-color;
+    transition: color 0.3s ease;
+
+    &:hover {
+      color: $accent-color;
+    }
+  }
+
+  &__avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    transition: border-color 0.3s ease;
+
+    .easter-egg__link:hover & {
+      border-color: $accent-color;
+    }
+  }
+
+  &__name {
+    font-size: 1.2rem;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+  }
+}
