@@ -1,5 +1,9 @@
 {
   "name": "tekkenrivals2",
+  "author": {
+    "name": "RXDCODX",
+    "url": "https://github.com/RXDCODX"
+  },
   "private": true,
   "version": "2.0.0",
   "type": "module",

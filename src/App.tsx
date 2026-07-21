@@ -1,13 +1,49 @@
-const App: React.FC = () => {
+import { useRef } from 'react';
+import { AudioProvider } from './contexts/AudioContext';
+import { useAudio } from './hooks/useAudio';
+import AudioToggleButton from './components/AudioToggleButton';
+
+const AppContent: React.FC = () => {
+  const { setBackgroundMusic } = useAudio();
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
   return (
     <>
-      {/* Fixed logo in center of screen */}
-      <div className='logo-container'>
-        <img src='/logo.png' alt='TEKKEN RIVALS 2' className='logo' />
-      </div>
+      {/* Background music */}
+      <audio
+        ref={audio => {
+          if (audio) {
+            audioRef.current = audio;
+            setBackgroundMusic(audio);
+          }
+        }}
+        src='./sr.wav'
+        loop
+        preload='auto'
+      />
+
+      {/* Audio toggle button */}
+      <AudioToggleButton isVisible={true} />
 
       {/* Scroll container for creating long scroll */}
       <div className='scroll-container'>
+        {/* Background video — scrolls with page */}
+        <video
+          className='background-video'
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload='auto'
+        >
+          <source src='./background.mp4' type='video/mp4' />
+        </video>
+
+        {/* Fixed logo in center of screen */}
+        <div className='logo-container'>
+          <img src='/logo.png' alt='TEKKEN RIVALS 2' className='logo' />
+        </div>
+
         {/* Easter egg at the very bottom */}
         <div className='easter-egg'>
           <div className='easter-egg__content'>
@@ -46,6 +82,14 @@ const App: React.FC = () => {
         </div>
       </div>
     </>
+  );
+};
+
+const App: React.FC = () => {
+  return (
+    <AudioProvider>
+      <AppContent />
+    </AudioProvider>
   );
 };
 

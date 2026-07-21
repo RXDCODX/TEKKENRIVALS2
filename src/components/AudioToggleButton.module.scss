@@ -1,0 +1,331 @@
+.audioControlContainer {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.audioToggleButton {
+  width: 50px;
+  height: 50px;
+  border: 2px solid #6b7280;
+  border-radius: 5px;
+  background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+  color: #c0c0c0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    all 0.3s ease,
+    opacity 0.5s ease-in-out;
+  backdrop-filter: blur(10px);
+  box-shadow:
+    0 4px 15px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  opacity: 0;
+  transform: translateX(100px);
+
+  &:hover {
+    background: linear-gradient(145deg, #333333, #222222);
+    border-color: #9ca3af;
+    transform: scale(1.05);
+    box-shadow:
+      0 6px 20px rgba(156, 163, 175, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  &.playing {
+    background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+    border-color: #6b7280;
+    animation:
+      audioPulse 2s infinite,
+      buttonPulseGrey 3s ease-in-out infinite;
+
+    &:hover {
+      background: linear-gradient(145deg, #333333, #222222);
+      box-shadow:
+        0 6px 20px rgba(156, 163, 175, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+  }
+
+  &.visible {
+    opacity: 1;
+    transform: translateX(0);
+    animation:
+      slideIn 0.5s ease-out,
+      buttonPulse 3s ease-in-out infinite;
+  }
+
+  &.muted {
+    background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+    border-color: #4b5563;
+    animation: buttonPulse 3s ease-in-out infinite;
+
+    &:hover {
+      background: linear-gradient(145deg, #333333, #222222);
+      box-shadow:
+        0 6px 20px rgba(75, 85, 99, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+  }
+}
+
+.audioIcon {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  svg {
+    width: 100%;
+    height: 100%;
+    fill: currentColor;
+  }
+}
+
+// Адаптивность для мобильных устройств
+@media (max-width: 768px) {
+  .audioControlContainer {
+    top: 15px;
+    right: 15px;
+  }
+
+  .audioToggleButton {
+    width: 45px;
+    height: 45px;
+
+    .audioIcon {
+      width: 20px;
+      height: 20px;
+    }
+  }
+}
+
+// Анимация появления
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(100px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+// Анимация пульсации для аудио
+@keyframes audioPulse {
+  0% {
+    box-shadow:
+      0 0 0 0 rgba(156, 163, 175, 0.7),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  }
+
+  70% {
+    box-shadow:
+      0 0 0 10px rgba(156, 163, 175, 0),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  }
+
+  100% {
+    box-shadow:
+      0 0 0 0 rgba(156, 163, 175, 0),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  }
+}
+
+// Общая pulse анимация для кнопки
+@keyframes buttonPulse {
+  0% {
+    transform: scale(1);
+    box-shadow:
+      0 4px 15px rgba(0, 0, 0, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  }
+
+  50% {
+    transform: scale(1.05);
+    box-shadow:
+      0 5px 20px rgba(107, 114, 128, 0.25),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  }
+
+  100% {
+    transform: scale(1);
+    box-shadow:
+      0 4px 15px rgba(0, 0, 0, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  }
+}
+
+// Pulse анимация для состояния воспроизведения
+@keyframes buttonPulseGrey {
+  0% {
+    transform: scale(1);
+    box-shadow:
+      0 4px 15px rgba(0, 0, 0, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  }
+
+  50% {
+    transform: scale(1.05);
+    box-shadow:
+      0 5px 20px rgba(107, 114, 128, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  }
+
+  100% {
+    transform: scale(1);
+    box-shadow:
+      0 4px 15px rgba(0, 0, 0, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  }
+}
+
+// Стили для ползунка громкости
+.volumeSliderContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(30, 30, 30, 0.95),
+    rgba(20, 20, 20, 0.95)
+  );
+  border-radius: 8px;
+  backdrop-filter: blur(10px);
+  border: 1px solid #4b5563;
+  box-shadow:
+    0 4px 15px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  margin-top: 5px;
+  width: 36px;
+  height: 130px;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-5px) scale(0.95);
+  transition:
+    opacity 0.3s ease-out,
+    transform 0.3s ease-out;
+  overflow: visible;
+
+  &.sliderVisible {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.volumeSlider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 110px;
+  height: 6px;
+  background: transparent;
+  outline: none;
+  cursor: pointer;
+  margin: 0;
+  transform: rotate(-90deg);
+  transform-origin: center center;
+
+  &::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, #3b3b3b, #4b5563);
+    border-radius: 2px;
+  }
+
+  &::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    background: linear-gradient(145deg, #9ca3af, #6b7280);
+    border-radius: 50%;
+    cursor: grab;
+    box-shadow:
+      0 1px 4px rgba(0, 0, 0, 0.4),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    transition: background 0.2s ease;
+    margin-top: -6px;
+
+    &:hover {
+      background: linear-gradient(145deg, #d1d5db, #9ca3af);
+    }
+
+    &:active {
+      cursor: grabbing;
+    }
+  }
+
+  &::-moz-range-track {
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, #3b3b3b, #4b5563);
+    border-radius: 2px;
+  }
+
+  &::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    background: linear-gradient(145deg, #9ca3af, #6b7280);
+    border-radius: 50%;
+    cursor: grab;
+    border: none;
+    box-shadow:
+      0 1px 4px rgba(0, 0, 0, 0.4),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    transition: background 0.2s ease;
+
+    &:hover {
+      background: linear-gradient(145deg, #d1d5db, #9ca3af);
+    }
+
+    &:active {
+      cursor: grabbing;
+    }
+  }
+}
+
+// Адаптивность для ползунка громкости
+@media (max-width: 768px) {
+  .volumeSliderContainer {
+    padding: 10px 6px;
+    width: 25px;
+    height: 100px;
+  }
+
+  .volumeSlider {
+    width: 3px;
+    height: 80px;
+
+    &::-moz-range-track {
+      width: 3px;
+      height: 80px;
+    }
+
+    &::-webkit-slider-thumb {
+      width: 10px;
+      height: 10px;
+    }
+
+    &::-moz-range-thumb {
+      width: 10px;
+      height: 10px;
+    }
+  }
+}

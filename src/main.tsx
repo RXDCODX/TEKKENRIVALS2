@@ -5,6 +5,10 @@ import './styles/main.scss';
 
 document.body.classList.add('loaded');
 
+if (import.meta.env.DEV) {
+  document.documentElement.classList.add('dev');
+}
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <App />
