@@ -15,6 +15,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
   const backgroundMusicRef = useRef<HTMLAudioElement | null>(null);
   const [isMuted, setIsMuted] = useState(true);
   const [volume, setVolumeState] = useState(0.3);
+  const userInteractedRef = useRef(false);
 
   // Ref to track latest isMuted for callbacks
   const isMutedRef = useRef(isMuted);
@@ -41,6 +42,19 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
     }
   }, []);
 
+  // Wait for first user interaction before playing
+  useEffect(() => {
+    const handleInteraction = () => {
+      userInteractedRef.current = true;
+      if (!isMutedRef.current && backgroundMusicRef.current) {
+        backgroundMusicRef.current.play().catch(console.error);
+      }
+      document.removeEventListener('click', handleInteraction);
+    };
+    document.addEventListener('click', handleInteraction);
+    return () => document.removeEventListener('click', handleInteraction);
+  }, []);
+
   // Sync audio element when isMuted/volume changes
   useEffect(() => {
     if (backgroundMusicRef.current) {
@@ -49,9 +63,9 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
     }
   }, [isMuted, volume]);
 
-  // Play when unmuted
+  // Play when unmuted (only after user interaction)
   useEffect(() => {
-    if (backgroundMusicRef.current && !isMuted) {
+    if (backgroundMusicRef.current && !isMuted && userInteractedRef.current) {
       backgroundMusicRef.current.play().catch(console.error);
     }
   }, [isMuted]);
