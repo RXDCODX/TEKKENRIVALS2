@@ -25,14 +25,7 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
 
   // Load saved state from localStorage
   useEffect(() => {
-    const savedState = localStorage.getItem('audioEnabled');
     const savedVolume = localStorage.getItem('audioVolume');
-
-    if (savedState !== null) {
-      const enabled = JSON.parse(savedState);
-      setIsMuted(!enabled);
-      isMutedRef.current = !enabled;
-    }
 
     if (savedVolume !== null) {
       const volumeValue = parseFloat(savedVolume);
@@ -46,7 +39,12 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
   useEffect(() => {
     const handleInteraction = () => {
       userInteractedRef.current = true;
-      if (!isMutedRef.current && backgroundMusicRef.current) {
+      const savedState = localStorage.getItem('audioEnabled');
+      const shouldPlay = savedState !== null && JSON.parse(savedState);
+      if (shouldPlay && backgroundMusicRef.current) {
+        setIsMuted(false);
+        isMutedRef.current = false;
+        backgroundMusicRef.current.muted = false;
         backgroundMusicRef.current.play().catch(console.error);
       }
       document.removeEventListener('click', handleInteraction);
