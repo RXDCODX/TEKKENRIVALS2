@@ -73,24 +73,6 @@ const AppContent: React.FC = () => {
                 />
               </a>
             </div>
-            <div className='easter-egg__links'>
-              <a
-                href='https://twitch.tv/avicii75'
-                target='_blank'
-                rel='noopener noreferrer'
-                className='easter-egg__text-link'
-              >
-                twitch.tv/avicii75
-              </a>
-              <a
-                href='https://github.com/rxdcodx'
-                target='_blank'
-                rel='noopener noreferrer'
-                className='easter-egg__text-link'
-              >
-                github.com/rxdcodx
-              </a>
-            </div>
           </div>
         </div>
       </div>

@@ -81,7 +81,6 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 20px;
   }
 
   &__avatars {
@@ -108,24 +107,6 @@ body {
       transform: scale(1.15);
       border-color: $accent-color;
       box-shadow: 0 0 15px rgba(255, 0, 0, 0.4);
-    }
-  }
-
-  &__links {
-    display: flex;
-    gap: 25px;
-  }
-
-  &__text-link {
-    font-size: 1rem;
-    font-weight: 500;
-    letter-spacing: 0.5px;
-    text-decoration: none;
-    color: $text-color;
-    transition: color 0.3s ease;
-
-    &:hover {
-      color: $accent-color;
     }
   }
 }
