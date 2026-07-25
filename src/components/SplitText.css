@@ -1,0 +1,9 @@
+.split-parent {
+  overflow: hidden;
+  font-size: clamp(0.9rem, 2.2vw, 1.6rem);
+  line-height: 1.4;
+}
+
+.split-parent * {
+  overflow: visible;
+}

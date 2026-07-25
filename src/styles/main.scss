@@ -2,6 +2,10 @@
 $bg-color: #000000;
 $text-color: #ffffff;
 $accent-color: #ff0000;
+$purple-color: #a855f7;
+$font-title: 'Orbitron', sans-serif;
+$font-heading: 'Russo One', sans-serif;
+$font-body: 'Rajdhani', sans-serif;
 
 // Reset
 *,
@@ -24,7 +28,7 @@ html:not(.dev) {
 body {
   background-color: $bg-color;
   color: $text-color;
-  font-family: 'Roboto', sans-serif;
+  font-family: $font-body;
   overflow-x: hidden;
 }
 
@@ -107,6 +111,152 @@ body {
       transform: scale(1.15);
       border-color: $accent-color;
       box-shadow: 0 0 15px rgba(255, 0, 0, 0.4);
+    }
+  }
+}
+
+// Poster sections
+.poster-section {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 92%;
+  max-width: 1600px;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  gap: 40px;
+  z-index: 10;
+
+  &--reversed {
+    flex-direction: row-reverse;
+  }
+
+  &:nth-of-type(2) {
+    top: 1500px;
+  }
+
+  &:nth-of-type(3) {
+    top: 2800px;
+  }
+
+  &__image {
+    flex-shrink: 0;
+    width: 30%;
+    max-width: 380px;
+    margin-left: auto;
+    border-radius: 12px;
+    object-fit: cover;
+    box-shadow: 0 0 40px rgba(255, 0, 0, 0.15);
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+    &:hover {
+      transform: scale(1.03);
+      box-shadow: 0 0 60px rgba(168, 85, 247, 0.3);
+    }
+  }
+
+  &__text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+    min-width: 0;
+
+    &--formats {
+      width: 100%;
+    }
+
+    &--distributed {
+      justify-content: space-between;
+    }
+  }
+
+  &__title {
+    text-align: center;
+
+    .split-title {
+      font-family: $font-heading;
+      font-size: clamp(1.4rem, 4vw, 3rem);
+      letter-spacing: 2px;
+    }
+  }
+
+  &__center {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    width: 100%;
+
+    > * {
+      width: 100%;
+    }
+  }
+
+  &__bottom {
+    margin-top: auto;
+
+    .split-parent {
+      display: block !important;
+      width: 100%;
+    }
+  }
+
+  &__line {
+    font-size: clamp(0.9rem, 2.2vw, 1.6rem);
+    line-height: 1.5;
+    white-space: nowrap;
+  }
+
+  &__format {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 8px 0;
+
+    &--right {
+      align-items: flex-end;
+      text-align: right;
+    }
+
+    .split-heading {
+      font-family: $font-title;
+      font-size: clamp(0.85rem, 2.2vw, 1.6rem);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+  }
+
+  &__link {
+    display: inline-block;
+    color: $purple-color;
+    font-family: $font-body;
+    font-size: clamp(0.8rem, 1.8vw, 1.3rem);
+    font-weight: 700;
+    text-decoration: none;
+    transition: opacity 0.3s ease;
+
+    &:hover {
+      opacity: 0.7;
+    }
+  }
+}
+
+// Poster responsive
+@media (max-width: 768px) {
+  .poster-section {
+    flex-direction: column;
+    width: 90%;
+    gap: 30px;
+
+    &--reversed {
+      flex-direction: column;
+    }
+
+    &__image {
+      width: 100%;
+      max-width: 100%;
     }
   }
 }
