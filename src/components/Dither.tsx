@@ -62,7 +62,7 @@ float cnoise(vec2 P) {
   return 2.3 * mix(n_x.x, n_x.y, fade_xy.y);
 }
 
-const int OCTAVES = 4;
+const int OCTAVES = 2;
 float fbm(vec2 p) {
   float value = 0.0;
   float amp = 1.0;
@@ -234,6 +234,8 @@ function DitheredWaves({
 
   const prevColor = useRef([...waveColor]);
   useFrame(({ clock }) => {
+    if (document.hidden) return;
+
     const u = waveUniformsRef.current;
 
     if (!disableAnimation) {
@@ -259,7 +261,6 @@ function DitheredWaves({
     }
   });
 
-  // Listen on window directly — R3F onPointerMove doesn't fire when pointer-events: none
   useEffect(() => {
     if (!enableMouseInteraction) return;
     const handleMouseMove = (e: MouseEvent) => {
@@ -339,8 +340,12 @@ export default function Dither({
     <Canvas
       className='dither-container'
       camera={{ position: [0, 0, 6] }}
-      dpr={1}
-      gl={{ antialias: true, preserveDrawingBuffer: true }}
+      dpr={0.5}
+      gl={{
+        antialias: false,
+        preserveDrawingBuffer: false,
+        powerPreference: 'low-power',
+      }}
     >
       <DitheredWaves
         waveSpeed={waveSpeed}

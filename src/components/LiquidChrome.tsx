@@ -29,7 +29,7 @@ export const LiquidChrome: React.FC<LiquidChromeProps> = ({
     if (!containerRef.current) return;
 
     const container = containerRef.current;
-    const renderer = new Renderer({ antialias: true });
+    const renderer = new Renderer({ antialias: false });
     const gl = renderer.gl;
     gl.clearColor(1, 1, 1, 1);
 
@@ -59,7 +59,7 @@ export const LiquidChrome: React.FC<LiquidChromeProps> = ({
           vec2 fragCoord = uvCoord * uResolution.xy;
           vec2 uv = (2.0 * fragCoord - uResolution.xy) / min(uResolution.x, uResolution.y);
 
-          for (float i = 1.0; i < 10.0; i++){
+          for (float i = 1.0; i < 5.0; i++){
               uv.x += uAmplitude / i * cos(i * uFrequencyX * uv.y + uTime + uMouse.x * 3.14159 * uMouseStrength);
               uv.y += uAmplitude / i * cos(i * uFrequencyY * uv.x + uTime + uMouse.y * 3.14159 * uMouseStrength);
           }
@@ -75,16 +75,7 @@ export const LiquidChrome: React.FC<LiquidChromeProps> = ({
       }
 
       void main() {
-          vec4 col = vec4(0.0);
-          int samples = 0;
-          for (int i = -1; i <= 1; i++){
-              for (int j = -1; j <= 1; j++){
-                  vec2 offset = vec2(float(i), float(j)) * (1.0 / min(uResolution.x, uResolution.y));
-                  col += renderImage(vUv + offset);
-                  samples++;
-              }
-          }
-          gl_FragColor = col / float(samples);
+          gl_FragColor = renderImage(vUv);
       }
     `;
 
@@ -111,11 +102,12 @@ export const LiquidChrome: React.FC<LiquidChromeProps> = ({
     });
     const mesh = new Mesh(gl, { geometry, program });
 
+    const renderScale = 0.5;
+
     function resize() {
-      const scale = 1;
       renderer.setSize(
-        container.offsetWidth * scale,
-        container.offsetHeight * scale
+        container.offsetWidth * renderScale,
+        container.offsetHeight * renderScale
       );
       const resUniform = program.uniforms.uResolution.value as Float32Array;
       resUniform[0] = gl.canvas.width;
@@ -152,8 +144,16 @@ export const LiquidChrome: React.FC<LiquidChromeProps> = ({
     }
 
     let animationId: number;
+    let previousTime = 0;
+    const frameInterval = 1000 / 30;
+
     function update(t: number) {
       animationId = requestAnimationFrame(update);
+
+      if (document.hidden) return;
+      if (t - previousTime < frameInterval) return;
+
+      previousTime = t;
       program.uniforms.uTime.value = t * 0.001 * speed;
       renderer.render({ scene: mesh });
     }
