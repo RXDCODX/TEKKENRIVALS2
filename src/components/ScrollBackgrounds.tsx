@@ -9,13 +9,34 @@ gsap.registerPlugin(ScrollTrigger);
 const LiquidChrome = lazy(() => import('./LiquidChrome'));
 const Dither = lazy(() => import('./Dither'));
 
+/*
+ * Each background layer maps to a poster section.
+ * When a poster enters the viewport, its background fades in.
+ * When it exits, the background fades out.
+ * Transition zones overlap so two backgrounds are visible simultaneously.
+ *
+ * Layout:
+ *   [0] Video       — intro, visible before poster 1, fades out as poster 1 enters
+ *   [1] LiquidChrome — poster 1 background, fades in/out with poster 1
+ *   [2] Dither       — poster 2 background, fades in/out with poster 2
+ */
+
+const TRANSITION_ZONE = 0.3; // vh: overlap zone where two backgrounds crossfade
+
 const ScrollBackgrounds: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLDivElement>(null);
+  const videoElRef = useRef<HTMLVideoElement>(null);
   const chromeRef = useRef<HTMLDivElement>(null);
   const ditherRef = useRef<HTMLDivElement>(null);
   const [mountEffects, setMountEffects] = useState(false);
 
+  // Ensure video plays immediately
+  useEffect(() => {
+    videoElRef.current?.play().catch(() => {});
+  }, []);
+
+  // Lazy-mount WebGL effects on first scroll
   useEffect(() => {
     const onScroll = () => {
       if (window.scrollY > window.innerHeight * 0.5 && !mountEffects) {
@@ -26,119 +47,75 @@ const ScrollBackgrounds: React.FC = () => {
     return () => window.removeEventListener('scroll', onScroll);
   }, [mountEffects]);
 
+  // GSAP scroll-driven opacity for each background layer
   useEffect(() => {
     if (!containerRef.current) return;
 
-    const poster1 = document.querySelectorAll('.poster-section')[0] as HTMLElement | undefined;
-    const poster2 = document.querySelectorAll('.poster-section')[1] as HTMLElement | undefined;
-    const easterEgg = document.querySelector('.easter-egg') as HTMLElement | null;
-    if (!poster1 || !poster2) return;
+    const vh = window.innerHeight;
+    const maxScroll = document.documentElement.scrollHeight - vh;
+
+    const clamp = (v: number) => Math.max(0, Math.min(v, maxScroll));
+
+    const posters = document.querySelectorAll<HTMLElement>('.poster-section');
 
     const ctx = gsap.context(() => {
-      // Video: fade out approaching poster 1
-      gsap.fromTo(
-        videoRef.current,
-        { opacity: 1 },
-        {
+      // Helper: bell-curve opacity (0 → 1 → 0) over a scroll range
+      const fadeOnScroll = (el: HTMLElement, rangeStart: number, rangeEnd: number) => {
+        if (rangeEnd <= rangeStart) return;
+        gsap.to(el, {
           opacity: 0,
-          ease: 'none',
+          immediateRender: true,
           scrollTrigger: {
-            trigger: poster1,
-            start: 'top+=200vh bottom',
-            end: 'top bottom',
+            trigger: containerRef.current,
+            start: rangeStart,
+            end: rangeEnd,
             scrub: true,
-            once: false,
-          },
-        },
-      );
-
-      // LiquidChrome: fade in as poster 1 enters, fade out approaching poster 2
-      if (chromeRef.current) {
-        gsap.fromTo(
-          chromeRef.current,
-          { opacity: 0 },
-          {
-            opacity: 1,
-            ease: 'none',
-            scrollTrigger: {
-              trigger: poster1,
-              start: 'top+=200vh bottom',
-              end: 'top bottom',
-              scrub: true,
-              once: false,
+            onUpdate(self) {
+              const p = self.progress;
+              const opacity = p <= 0.5 ? p * 2 : (1 - p) * 2;
+              gsap.set(el, { opacity: Math.max(0, Math.min(1, opacity)) });
             },
           },
-        );
+        });
+      };
 
-        gsap.fromTo(
-          chromeRef.current,
-          { opacity: 1 },
-          {
-            opacity: 0,
-            ease: 'none',
-            scrollTrigger: {
-              trigger: poster2,
-              start: 'top+=150vh bottom',
-              end: 'top bottom',
-              scrub: true,
-              once: false,
-            },
+      // [0] Video — intro: fades OUT when poster 1 enters (no fade-in, only fade-out)
+      if (videoRef.current && posters.length > 0) {
+        const poster = posters[0];
+        const posterTop = poster.offsetTop;
+        // Fade-out starts TRANSITION_ZONE before poster enters viewport
+        const fadeStart = 0;
+        const fadeEnd = clamp(posterTop - vh + TRANSITION_ZONE * vh);
+        gsap.to(videoRef.current, {
+          opacity: 0,
+          immediateRender: true,
+          scrollTrigger: {
+            trigger: containerRef.current,
+            start: fadeStart,
+            end: fadeEnd,
+            scrub: true,
           },
-        );
+        });
       }
 
-      // Dither: fade in as poster 2 enters, fade out approaching easter egg
-      if (ditherRef.current) {
-        gsap.fromTo(
-          ditherRef.current,
-          { opacity: 0 },
-          {
-            opacity: 1,
-            ease: 'none',
-            scrollTrigger: {
-              trigger: poster2,
-              start: 'top+=150vh bottom',
-              end: 'top bottom',
-              scrub: true,
-              once: false,
-            },
-          },
-        );
+      // [1] LiquidChrome — poster 1 background (bell curve)
+      if (chromeRef.current && posters.length > 0) {
+        const poster = posters[0];
+        const posterTop = poster.offsetTop;
+        const posterHeight = poster.offsetHeight;
+        const rangeStart = clamp(posterTop - vh - TRANSITION_ZONE * vh);
+        const rangeEnd = clamp(posterTop + posterHeight + TRANSITION_ZONE * vh);
+        fadeOnScroll(chromeRef.current, rangeStart, rangeEnd);
+      }
 
-        if (easterEgg) {
-          gsap.fromTo(
-            ditherRef.current,
-            { opacity: 1 },
-            {
-              opacity: 0,
-              ease: 'none',
-              scrollTrigger: {
-                trigger: easterEgg,
-                start: 'top+=100vh bottom',
-                end: 'top bottom',
-                scrub: true,
-                once: false,
-              },
-            },
-          );
-
-          // Video: fade back in at easter egg
-          gsap.fromTo(
-            videoRef.current,
-            { opacity: 0 },
-            {
-              opacity: 1,
-              ease: 'none',
-              scrollTrigger: {
-                trigger: easterEgg,
-                start: 'top+=100vh bottom',
-                end: 'top bottom',
-                scrub: true,
-                once: false,
-              },
-            },
-          );
-        }
+      // [2] Dither — poster 2 background (bell curve)
+      if (ditherRef.current && posters.length > 1) {
+        const poster = posters[1];
+        const posterTop = poster.offsetTop;
+        const posterHeight = poster.offsetHeight;
+        const rangeStart = clamp(posterTop - vh - TRANSITION_ZONE * vh);
+        const rangeEnd = clamp(posterTop + posterHeight + TRANSITION_ZONE * vh);
+        fadeOnScroll(ditherRef.current, rangeStart, rangeEnd);
       }
     });
 
@@ -147,8 +124,10 @@ const ScrollBackgrounds: React.FC = () => {
 
   return (
     <div className='scroll-bg' ref={containerRef}>
-      <div className='scroll-bg__layer' ref={videoRef}>
+      {/* Video layer — visible at page load */}
+      <div className='scroll-bg__layer scroll-bg__layer--video' ref={videoRef}>
         <video
+          ref={videoElRef}
           className='scroll-bg__video'
           autoPlay
           muted
@@ -160,20 +139,25 @@ const ScrollBackgrounds: React.FC = () => {
         </video>
       </div>
 
+      {/* LiquidChrome — poster 1 background */}
       {mountEffects && (
         <div className='scroll-bg__layer' ref={chromeRef}>
           <Suspense fallback={null}>
             <LiquidChrome
-              baseColor={[0.15, 0.0, 0.2]}
+              baseColor={[
+                0.09803921568627451, 0.09803921568627451, 0.09803921568627451,
+              ]}
               speed={0.3}
               amplitude={0.6}
               frequencyX={3}
               frequencyY={2}
+              interactive
             />
           </Suspense>
         </div>
       )}
 
+      {/* Dither — poster 2 background */}
       {mountEffects && (
         <div className='scroll-bg__layer' ref={ditherRef}>
           <Suspense fallback={null}>

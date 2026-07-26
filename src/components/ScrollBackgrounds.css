@@ -9,6 +9,11 @@
   position: absolute;
   inset: 0;
   opacity: 0;
+  will-change: opacity;
+}
+
+.scroll-bg__layer--video {
+  opacity: 1;
 }
 
 .scroll-bg__video {
