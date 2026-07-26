@@ -117,6 +117,28 @@ const ScrollBackgrounds: React.FC = () => {
         const rangeEnd = clamp(posterTop + posterHeight + TRANSITION_ZONE * vh);
         fadeOnScroll(ditherRef.current, rangeStart, rangeEnd);
       }
+
+      // Video — outro: fades back in at the easter egg (bottom of page)
+      if (videoRef.current) {
+        const easterEgg = document.querySelector<HTMLElement>('.easter-egg');
+        if (easterEgg) {
+          const eggTop = easterEgg.offsetTop;
+          const fadeStart = clamp(eggTop - vh - TRANSITION_ZONE * vh);
+          const fadeEnd = clamp(eggTop + TRANSITION_ZONE * vh);
+          if (fadeEnd > fadeStart) {
+            gsap.to(videoRef.current, {
+              opacity: 1,
+              immediateRender: false,
+              scrollTrigger: {
+                trigger: containerRef.current,
+                start: fadeStart,
+                end: fadeEnd,
+                scrub: true,
+              },
+            });
+          }
+        }
+      }
     });
 
     return () => ctx.revert();
