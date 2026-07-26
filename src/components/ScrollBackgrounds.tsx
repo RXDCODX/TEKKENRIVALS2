@@ -177,6 +177,7 @@ const ScrollBackgrounds: React.FC = () => {
               amplitude={0.6}
               frequencyX={3}
               frequencyY={2}
+              mouseStrength={0.2}
               interactive
             />
           </Suspense>

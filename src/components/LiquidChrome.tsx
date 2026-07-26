@@ -10,6 +10,7 @@ interface LiquidChromeProps extends React.HTMLAttributes<HTMLDivElement> {
   frequencyX?: number;
   frequencyY?: number;
   interactive?: boolean;
+  mouseStrength?: number;
 }
 
 export const LiquidChrome: React.FC<LiquidChromeProps> = ({
@@ -19,6 +20,7 @@ export const LiquidChrome: React.FC<LiquidChromeProps> = ({
   frequencyX = 3,
   frequencyY = 2,
   interactive = true,
+  mouseStrength = 1,
   ...props
 }) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -50,6 +52,7 @@ export const LiquidChrome: React.FC<LiquidChromeProps> = ({
       uniform float uFrequencyX;
       uniform float uFrequencyY;
       uniform vec2 uMouse;
+      uniform float uMouseStrength;
       varying vec2 vUv;
 
       vec4 renderImage(vec2 uvCoord) {
@@ -57,14 +60,14 @@ export const LiquidChrome: React.FC<LiquidChromeProps> = ({
           vec2 uv = (2.0 * fragCoord - uResolution.xy) / min(uResolution.x, uResolution.y);
 
           for (float i = 1.0; i < 10.0; i++){
-              uv.x += uAmplitude / i * cos(i * uFrequencyX * uv.y + uTime + uMouse.x * 3.14159);
-              uv.y += uAmplitude / i * cos(i * uFrequencyY * uv.x + uTime + uMouse.y * 3.14159);
+              uv.x += uAmplitude / i * cos(i * uFrequencyX * uv.y + uTime + uMouse.x * 3.14159 * uMouseStrength);
+              uv.y += uAmplitude / i * cos(i * uFrequencyY * uv.x + uTime + uMouse.y * 3.14159 * uMouseStrength);
           }
 
           vec2 diff = (uvCoord - uMouse);
           float dist = length(diff);
           float falloff = exp(-dist * 20.0);
-          float ripple = sin(10.0 * dist - uTime * 2.0) * 0.03;
+          float ripple = sin(10.0 * dist - uTime * 2.0) * 0.03 * uMouseStrength;
           uv += (diff / (dist + 0.0001)) * ripple * falloff;
 
           vec3 color = uBaseColor / abs(sin(uTime - uv.y - uv.x));
@@ -103,6 +106,7 @@ export const LiquidChrome: React.FC<LiquidChromeProps> = ({
         uFrequencyX: { value: frequencyX },
         uFrequencyY: { value: frequencyY },
         uMouse: { value: new Float32Array([0, 0]) },
+        uMouseStrength: { value: mouseStrength },
       },
     });
     const mesh = new Mesh(gl, { geometry, program });
@@ -169,7 +173,7 @@ export const LiquidChrome: React.FC<LiquidChromeProps> = ({
       }
       gl.getExtension('WEBGL_lose_context')?.loseContext();
     };
-  }, [baseColor, speed, amplitude, frequencyX, frequencyY, interactive]);
+  }, [baseColor, speed, amplitude, frequencyX, frequencyY, interactive, mouseStrength]);
 
   return (
     <div ref={containerRef} className='liquidChrome-container' {...props} />
