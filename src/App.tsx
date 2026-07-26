@@ -5,6 +5,7 @@ import AudioToggleButton from './components/AudioToggleButton';
 import SplitText from './components/SplitText';
 import Lightbox from './components/Lightbox';
 import ScrollBackgrounds from './components/ScrollBackgrounds';
+import FontSwitcher from './components/FontSwitcher';
 
 const AppContent: React.FC = () => {
   const { setBackgroundMusic } = useAudio();
@@ -48,6 +49,9 @@ const AppContent: React.FC = () => {
 
       {/* Audio toggle button */}
       <AudioToggleButton isVisible={true} />
+
+      {/* Dev-only instant font switcher — never renders in production */}
+      {import.meta.env.DEV && <FontSwitcher />}
 
       {/* Scroll backgrounds — fixed, z-index: 1 */}
       <ScrollBackgrounds />
