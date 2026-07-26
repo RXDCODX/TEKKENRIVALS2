@@ -4,6 +4,7 @@ import { useAudio } from './hooks/useAudio';
 import AudioToggleButton from './components/AudioToggleButton';
 import SplitText from './components/SplitText';
 import Lightbox from './components/Lightbox';
+import ScrollBackgrounds from './components/ScrollBackgrounds';
 
 const AppContent: React.FC = () => {
   const { setBackgroundMusic } = useAudio();
@@ -30,20 +31,11 @@ const AppContent: React.FC = () => {
       {/* Audio toggle button */}
       <AudioToggleButton isVisible={true} />
 
+      {/* Scroll backgrounds — fixed, z-index: 1 */}
+      <ScrollBackgrounds />
+
       {/* Scroll container for creating long scroll */}
       <div className='scroll-container'>
-        {/* Background video — scrolls with page */}
-        <video
-          className='background-video'
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload='auto'
-        >
-          <source src='./background.mp4' type='video/mp4' />
-        </video>
-
         {/* Fixed logo in center of screen */}
         <div className='logo-container'>
           <img src='/logo.png' alt='TEKKEN RIVALS 2' className='logo' />

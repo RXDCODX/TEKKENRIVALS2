@@ -170,7 +170,6 @@ const SplitText: React.FC<SplitTextProps> = ({
     }
   );
 
-  const Tag = (tag || 'p') as React.ElementType;
   const style: React.CSSProperties = {
     textAlign,
     overflow: 'hidden',
@@ -180,10 +179,26 @@ const SplitText: React.FC<SplitTextProps> = ({
     willChange: 'transform, opacity',
   };
 
+  if (tag === 'span') {
+    return (
+      <span
+        ref={ref as React.Ref<HTMLSpanElement>}
+        style={style}
+        className={`split-parent ${className}`}
+      >
+        {text}
+      </span>
+    );
+  }
+
   return (
-    <Tag ref={ref} style={style} className={`split-parent ${className}`}>
+    <p
+      ref={ref as React.Ref<HTMLParagraphElement>}
+      style={style}
+      className={`split-parent ${className}`}
+    >
       {text}
-    </Tag>
+    </p>
   );
 };
 
