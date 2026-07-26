@@ -173,7 +173,15 @@ export const LiquidChrome: React.FC<LiquidChromeProps> = ({
       }
       gl.getExtension('WEBGL_lose_context')?.loseContext();
     };
-  }, [baseColor, speed, amplitude, frequencyX, frequencyY, interactive, mouseStrength]);
+  }, [
+    baseColor,
+    speed,
+    amplitude,
+    frequencyX,
+    frequencyY,
+    interactive,
+    mouseStrength,
+  ]);
 
   return (
     <div ref={containerRef} className='liquidChrome-container' {...props} />
