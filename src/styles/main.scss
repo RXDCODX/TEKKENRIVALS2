@@ -7,6 +7,13 @@ $font-title: 'Orbitron', sans-serif;
 $font-heading: 'Russo One', sans-serif;
 $font-body: 'Rajdhani', sans-serif;
 
+// Runtime-overridable font roles (see src/components/FontSwitcher.tsx)
+:root {
+  --font-title: #{$font-title};
+  --font-heading: #{$font-heading};
+  --font-body: #{$font-body};
+}
+
 // Reset
 *,
 *::before,
@@ -28,7 +35,7 @@ html:not(.dev) {
 body {
   background-color: $bg-color;
   color: $text-color;
-  font-family: $font-body;
+  font-family: var(--font-body);
   overflow-x: hidden;
 }
 
@@ -141,7 +148,9 @@ body {
     object-fit: cover;
     box-shadow: 0 0 40px rgba(255, 0, 0, 0.15);
     cursor: pointer;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition:
+      transform 0.3s ease,
+      box-shadow 0.3s ease;
 
     &:hover {
       transform: scale(1.03);
@@ -169,7 +178,7 @@ body {
     text-align: center;
 
     .split-title {
-      font-family: $font-heading;
+      font-family: var(--font-heading);
       font-size: clamp(1.4rem, 4vw, 3rem);
       letter-spacing: 2px;
     }
@@ -213,7 +222,7 @@ body {
     }
 
     .split-heading {
-      font-family: $font-title;
+      font-family: var(--font-title);
       font-size: clamp(0.85rem, 2.2vw, 1.6rem);
       letter-spacing: 1.5px;
       text-transform: uppercase;
@@ -223,7 +232,7 @@ body {
   &__link {
     display: inline-block;
     color: $purple-color;
-    font-family: $font-body;
+    font-family: var(--font-body);
     font-size: clamp(0.8rem, 1.8vw, 1.3rem);
     font-weight: 700;
     text-decoration: none;
