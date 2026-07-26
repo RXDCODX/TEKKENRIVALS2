@@ -253,12 +253,15 @@ body {
   }
 }
 
-// Poster responsive
+// Poster responsive — modern mobile stacking: poster image on top,
+// full-width text container below it
 @media (max-width: 768px) {
   .poster-section {
     flex-direction: column;
-    width: 90%;
-    gap: 30px;
+    width: 100%;
+    max-width: 100%;
+    padding: 0 20px;
+    gap: 28px;
 
     &--reversed {
       flex-direction: column;
@@ -267,6 +270,31 @@ body {
     &__image {
       width: 100%;
       max-width: 100%;
+      // Always render above the text, regardless of DOM order
+      order: -1;
+    }
+
+    &__text {
+      width: 100%;
+    }
+
+    // Announcement poster — a single centered column is enough on mobile
+    &__text--distributed {
+      align-items: center;
+
+      .split-parent {
+        text-align: center !important;
+      }
+    }
+
+    &__line {
+      text-align: center;
+    }
+
+    // Formats poster — keep the alternating "chess" text layout,
+    // each block just spans the full width of the phone
+    &__format {
+      width: 100%;
     }
   }
 }
