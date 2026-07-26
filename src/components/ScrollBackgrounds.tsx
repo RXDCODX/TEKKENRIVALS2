@@ -60,7 +60,11 @@ const ScrollBackgrounds: React.FC = () => {
 
     const ctx = gsap.context(() => {
       // Helper: bell-curve opacity (0 → 1 → 0) over a scroll range
-      const fadeOnScroll = (el: HTMLElement, rangeStart: number, rangeEnd: number) => {
+      const fadeOnScroll = (
+        el: HTMLElement,
+        rangeStart: number,
+        rangeEnd: number
+      ) => {
         if (rangeEnd <= rangeStart) return;
         gsap.to(el, {
           opacity: 0,
