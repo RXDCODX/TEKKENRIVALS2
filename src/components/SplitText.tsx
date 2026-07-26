@@ -34,7 +34,7 @@ const SplitText: React.FC<SplitTextProps> = ({
   from = { opacity: 0, y: 40 },
   to = { opacity: 1, y: 0 },
   threshold = 0.1,
-  rootMargin = '-100px',
+  rootMargin = '-8%',
   textAlign = 'center',
   tag = 'p',
   onLetterAnimationComplete,
@@ -78,12 +78,24 @@ const SplitText: React.FC<SplitTextProps> = ({
       const marginMatch = /^(-?\d+(?:\.\d+)?)(px|em|rem|%)?$/.exec(rootMargin);
       const marginValue = marginMatch ? parseFloat(marginMatch[1]) : 0;
       const marginUnit = marginMatch ? marginMatch[2] || 'px' : 'px';
+      // Resolve to real pixels relative to the *current* viewport so a
+      // percentage margin (the default) scales down on short mobile
+      // screens instead of eating a fixed, disproportionate chunk of them.
+      const rootFontSize = marginUnit.endsWith('em')
+        ? parseFloat(getComputedStyle(document.documentElement).fontSize)
+        : 0;
+      const marginPx =
+        marginUnit === '%'
+          ? (marginValue / 100) * window.innerHeight
+          : marginUnit === 'em' || marginUnit === 'rem'
+            ? marginValue * rootFontSize
+            : marginValue;
       const sign =
-        marginValue === 0
+        marginPx === 0
           ? ''
-          : marginValue < 0
-            ? `-=${Math.abs(marginValue)}${marginUnit}`
-            : `+=${marginValue}${marginUnit}`;
+          : marginPx < 0
+            ? `-=${Math.abs(marginPx)}px`
+            : `+=${marginPx}px`;
       const start = `top ${startPct}%${sign}`;
 
       let targets: Element[] = [];
