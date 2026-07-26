@@ -25,6 +25,8 @@ uniform float waveSpeed;
 uniform float waveFrequency;
 uniform float waveAmplitude;
 uniform vec3 waveColor;
+uniform vec3 waveColor2;
+uniform float colorCycleSpeed;
 uniform vec2 mousePos;
 uniform int enableMouseInteraction;
 uniform float mouseRadius;
@@ -92,7 +94,9 @@ void main() {
     float effect = 1.0 - smoothstep(0.0, mouseRadius, dist);
     f -= 0.5 * effect;
   }
-  vec3 col = mix(vec3(0.0), waveColor, f);
+  float t = sin(time * colorCycleSpeed) * 0.5 + 0.5;
+  vec3 animatedColor = mix(waveColor, waveColor2, t);
+  vec3 col = mix(vec3(0.0), animatedColor, f);
   gl_FragColor = vec4(col, 1.0);
 }
 `;
@@ -171,13 +175,18 @@ const RetroEffect = forwardRef<
 RetroEffect.displayName = 'RetroEffect';
 
 interface WaveUniforms {
-  [key: string]: THREE.Uniform<number | THREE.Vector2 | THREE.Color>;
+  [key: string]:
+    | THREE.Uniform<number>
+    | THREE.Uniform<THREE.Vector2>
+    | THREE.Uniform<THREE.Color>;
   time: THREE.Uniform<number>;
   resolution: THREE.Uniform<THREE.Vector2>;
   waveSpeed: THREE.Uniform<number>;
   waveFrequency: THREE.Uniform<number>;
   waveAmplitude: THREE.Uniform<number>;
   waveColor: THREE.Uniform<THREE.Color>;
+  waveColor2: THREE.Uniform<THREE.Color>;
+  colorCycleSpeed: THREE.Uniform<number>;
   mousePos: THREE.Uniform<THREE.Vector2>;
   enableMouseInteraction: THREE.Uniform<number>;
   mouseRadius: THREE.Uniform<number>;
@@ -188,6 +197,8 @@ interface DitheredWavesProps {
   waveFrequency: number;
   waveAmplitude: number;
   waveColor: [number, number, number];
+  waveColor2: [number, number, number];
+  colorCycleSpeed: number;
   colorNum: number;
   pixelSize: number;
   disableAnimation: boolean;
@@ -200,9 +211,8 @@ function DitheredWaves({
   waveFrequency,
   waveAmplitude,
   waveColor,
-  colorNum,
-  pixelSize,
-  disableAnimation,
+  waveColor2,
+  colorCycleSpeed,
   enableMouseInteraction,
   mouseRadius,
 }: DitheredWavesProps) {
@@ -217,6 +227,8 @@ function DitheredWaves({
     waveFrequency: new THREE.Uniform(waveFrequency),
     waveAmplitude: new THREE.Uniform(waveAmplitude),
     waveColor: new THREE.Uniform(new THREE.Color(...waveColor)),
+    waveColor2: new THREE.Uniform(new THREE.Color(...waveColor2)),
+    colorCycleSpeed: new THREE.Uniform(colorCycleSpeed),
     mousePos: new THREE.Uniform(new THREE.Vector2(0, 0)),
     enableMouseInteraction: new THREE.Uniform(enableMouseInteraction ? 1 : 0),
     mouseRadius: new THREE.Uniform(mouseRadius),
@@ -232,27 +244,11 @@ function DitheredWaves({
     }
   }, [size, gl]);
 
-  const prevColor = useRef([...waveColor]);
   useFrame(({ clock }) => {
     if (document.hidden) return;
 
     const u = waveUniformsRef.current;
-
-    if (!disableAnimation) {
-      u.time.value = clock.getElapsedTime();
-    }
-
-    if (u.waveSpeed.value !== waveSpeed) u.waveSpeed.value = waveSpeed;
-    if (u.waveFrequency.value !== waveFrequency)
-      u.waveFrequency.value = waveFrequency;
-    if (u.waveAmplitude.value !== waveAmplitude)
-      u.waveAmplitude.value = waveAmplitude;
-
-    if (!prevColor.current.every((v, i) => v === waveColor[i])) {
-      u.waveColor.value.set(...waveColor);
-      prevColor.current = [...waveColor];
-    }
-
+    u.time.value = clock.getElapsedTime();
     u.enableMouseInteraction.value = enableMouseInteraction ? 1 : 0;
     u.mouseRadius.value = mouseRadius;
 
@@ -297,7 +293,7 @@ function DitheredWaves({
       </mesh>
 
       <EffectComposer>
-        <RetroEffect colorNum={colorNum} pixelSize={pixelSize} />
+        <RetroEffect colorNum={4} pixelSize={2} />
       </EffectComposer>
 
       <mesh
@@ -318,6 +314,8 @@ interface DitherProps {
   waveFrequency?: number;
   waveAmplitude?: number;
   waveColor?: [number, number, number];
+  waveColor2?: [number, number, number];
+  colorCycleSpeed?: number;
   colorNum?: number;
   pixelSize?: number;
   disableAnimation?: boolean;
@@ -330,6 +328,8 @@ export default function Dither({
   waveFrequency = 3,
   waveAmplitude = 0.3,
   waveColor = [0.8, 0.1, 0.1],
+  waveColor2 = [0.1, 0.2, 0.8],
+  colorCycleSpeed = 0.3,
   colorNum = 4,
   pixelSize = 2,
   disableAnimation = false,
@@ -352,6 +352,8 @@ export default function Dither({
         waveFrequency={waveFrequency}
         waveAmplitude={waveAmplitude}
         waveColor={waveColor}
+        waveColor2={waveColor2}
+        colorCycleSpeed={colorCycleSpeed}
         colorNum={colorNum}
         pixelSize={pixelSize}
         disableAnimation={disableAnimation}

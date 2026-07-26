@@ -6,20 +6,17 @@ import './ScrollBackgrounds.css';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const LiquidChrome = lazy(() => import('./LiquidChrome'));
 const Dither = lazy(() => import('./Dither'));
 
 /*
- * Only one background layer is mounted at a time.
- * ScrollTrigger switches the active layer as posters enter/leave.
+ * Two layers: video (intro/outro) and dither (both posters).
+ * Dither shifts colors via shader uniforms — no React re-render.
  */
-
-type BackgroundLayer = 'video' | 'chrome' | 'dither';
 
 const ScrollBackgrounds: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const videoElRef = useRef<HTMLVideoElement>(null);
-  const [activeLayer, setActiveLayer] = useState<BackgroundLayer>('video');
+  const [showVideo, setShowVideo] = useState(true);
   const [mountEffects, setMountEffects] = useState(false);
 
   useEffect(() => {
@@ -36,34 +33,32 @@ const ScrollBackgrounds: React.FC = () => {
     return () => window.removeEventListener('scroll', onScroll);
   }, [mountEffects]);
 
-  // Pause video when not active
+  // Pause video when not visible
   useEffect(() => {
     const video = videoElRef.current;
     if (!video) return;
-
-    if (activeLayer === 'video' && !document.hidden) {
+    if (showVideo && !document.hidden) {
       void video.play().catch(() => {});
     } else {
       video.pause();
     }
-  }, [activeLayer]);
+  }, [showVideo]);
 
-  // Pause video when tab is hidden
   useEffect(() => {
     const onVisibility = () => {
       const video = videoElRef.current;
       if (!video) return;
       if (document.hidden) {
         video.pause();
-      } else if (activeLayer === 'video') {
+      } else if (showVideo) {
         void video.play().catch(() => {});
       }
     };
     document.addEventListener('visibilitychange', onVisibility);
     return () => document.removeEventListener('visibilitychange', onVisibility);
-  }, [activeLayer]);
+  }, [showVideo]);
 
-  // GSAP ScrollTrigger for layer switching
+  // ScrollTrigger: show video → hide video when poster 1 enters → show video at easter egg
   useEffect(() => {
     if (!containerRef.current) return;
 
@@ -72,79 +67,44 @@ const ScrollBackgrounds: React.FC = () => {
     const clamp = (v: number) => Math.max(0, Math.min(v, maxScroll));
 
     const posters = document.querySelectorAll<HTMLElement>('.poster-section');
+    const easterEgg = document.querySelector<HTMLElement>('.easter-egg');
 
     const ctx = gsap.context(() => {
       if (posters.length > 0) {
-        const poster1 = posters[0];
-        const p1Top = poster1.offsetTop;
-        const p1Height = poster1.offsetHeight;
+        const p1Top = posters[0].offsetTop;
 
+        // Hide video when poster 1 enters, show when scrolling back to top
         ScrollTrigger.create({
           trigger: containerRef.current,
-          start: clamp(p1Top - vh * 0.2),
-          end: clamp(p1Top + p1Height + vh * 0.2),
-          onEnter: () => {
-            if (mountEffects) setActiveLayer('chrome');
-          },
-          onEnterBack: () => {
-            if (mountEffects) setActiveLayer('chrome');
-          },
-          onLeave: () => setActiveLayer('video'),
-          onLeaveBack: () => setActiveLayer('video'),
+          start: clamp(p1Top - vh * 0.5),
+          onEnter: () => setShowVideo(false),
+          onLeaveBack: () => setShowVideo(true),
         });
       }
 
-      if (posters.length > 1) {
-        const poster2 = posters[1];
-        const p2Top = poster2.offsetTop;
-        const p2Height = poster2.offsetHeight;
-
-        ScrollTrigger.create({
-          trigger: containerRef.current,
-          start: clamp(p2Top - vh * 0.2),
-          end: clamp(p2Top + p2Height + vh * 0.2),
-          onEnter: () => {
-            if (mountEffects) setActiveLayer('dither');
-          },
-          onEnterBack: () => {
-            if (mountEffects) setActiveLayer('dither');
-          },
-          onLeave: () => {
-            if (mountEffects) setActiveLayer('chrome');
-          },
-          onLeaveBack: () => {
-            if (mountEffects) setActiveLayer('chrome');
-          },
-        });
-      }
-
-      // Video fades back in at easter egg
-      const easterEgg = document.querySelector<HTMLElement>('.easter-egg');
       if (easterEgg) {
         const eggTop = easterEgg.offsetTop;
-        const fadeStart = clamp(eggTop - vh - vh * 0.3);
+        const fadeStart = clamp(eggTop - vh);
         const fadeEnd = clamp(eggTop + vh * 0.3);
         if (fadeEnd > fadeStart) {
           ScrollTrigger.create({
             trigger: containerRef.current,
             start: fadeStart,
             end: fadeEnd,
-            onEnter: () => setActiveLayer('video'),
-            onLeaveBack: () => {
-              if (mountEffects) setActiveLayer('dither');
-            },
+            onEnter: () => setShowVideo(true),
+            onLeaveBack: () => setShowVideo(false),
           });
         }
       }
     });
 
     return () => ctx.revert();
-  }, [mountEffects]);
+  }, []);
 
   return (
     <div className='scroll-bg' ref={containerRef}>
       <div
-        className={`scroll-bg__layer scroll-bg__layer--video ${activeLayer === 'video' ? 'scroll-bg__layer--active' : ''}`}
+        className={`scroll-bg__layer scroll-bg__layer--video ${showVideo ? 'scroll-bg__layer--active' : ''}`}
       >
         <video
           ref={videoElRef}
@@ -159,32 +119,15 @@ const ScrollBackgrounds: React.FC = () => {
         </video>
       </div>
 
-      {mountEffects && activeLayer === 'chrome' && (
-        <div className='scroll-bg__layer scroll-bg__layer--active'>
-          <Suspense fallback={null}>
-            <LiquidChrome
-              baseColor={[
-                0.09803921568627451, 0.09803921568627451, 0.09803921568627451,
-              ]}
-              speed={0.3}
-              amplitude={0.6}
-              frequencyX={3}
-              frequencyY={2}
-              mouseStrength={0.2}
-              interactive
-            />
-          </Suspense>
-        </div>
-      )}
-
-      {mountEffects && activeLayer === 'dither' && (
-        <div className='scroll-bg__layer scroll-bg__layer--active'>
+      {mountEffects && (
+        <div
+          className={`scroll-bg__layer ${!showVideo ? 'scroll-bg__layer--active' : ''}`}
+        >
           <Suspense fallback={null}>
             <Dither
               waveSpeed={0.05}
               waveFrequency={3}
               waveAmplitude={0.3}
-              waveColor={[0.8, 0.1, 0.1]}
               colorNum={4}
               pixelSize={2}
               enableMouseInteraction={true}
