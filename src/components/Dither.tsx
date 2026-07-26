@@ -259,6 +259,21 @@ function DitheredWaves({
     }
   });
 
+  // Listen on window directly — R3F onPointerMove doesn't fire when pointer-events: none
+  useEffect(() => {
+    if (!enableMouseInteraction) return;
+    const handleMouseMove = (e: MouseEvent) => {
+      const rect = gl.domElement.getBoundingClientRect();
+      const dpr = gl.getPixelRatio();
+      mouseRef.current.set(
+        (e.clientX - rect.left) * dpr,
+        (e.clientY - rect.top) * dpr
+      );
+    };
+    window.addEventListener('mousemove', handleMouseMove, { passive: true });
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, [enableMouseInteraction, gl]);
+
   const handlePointerMove = (e: ThreeEvent<PointerEvent>) => {
     if (!enableMouseInteraction) return;
     const rect = gl.domElement.getBoundingClientRect();

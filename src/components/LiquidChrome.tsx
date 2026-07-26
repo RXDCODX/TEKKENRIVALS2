@@ -143,8 +143,8 @@ export const LiquidChrome: React.FC<LiquidChromeProps> = ({
     }
 
     if (interactive) {
-      container.addEventListener('mousemove', handleMouseMove);
-      container.addEventListener('touchmove', handleTouchMove);
+      window.addEventListener('mousemove', handleMouseMove);
+      window.addEventListener('touchmove', handleTouchMove);
     }
 
     let animationId: number;
@@ -161,8 +161,8 @@ export const LiquidChrome: React.FC<LiquidChromeProps> = ({
       cancelAnimationFrame(animationId);
       window.removeEventListener('resize', resize);
       if (interactive) {
-        container.removeEventListener('mousemove', handleMouseMove);
-        container.removeEventListener('touchmove', handleTouchMove);
+        window.removeEventListener('mousemove', handleMouseMove);
+        window.removeEventListener('touchmove', handleTouchMove);
       }
       if (gl.canvas.parentElement) {
         gl.canvas.parentElement.removeChild(gl.canvas);

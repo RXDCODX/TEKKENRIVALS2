@@ -32,6 +32,15 @@ body {
   overflow-x: hidden;
 }
 
+// Loading overlay — blocks interaction until page is ready
+.loading-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: $bg-color;
+  pointer-events: all;
+}
+
 // Logo container — absolute, centered in first viewport
 .logo-container {
   position: absolute;

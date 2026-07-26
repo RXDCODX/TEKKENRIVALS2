@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { AudioProvider } from './contexts/AudioContext';
 import { useAudio } from './hooks/useAudio';
 import AudioToggleButton from './components/AudioToggleButton';
@@ -12,9 +12,27 @@ const AppContent: React.FC = () => {
   const [lightbox, setLightbox] = useState<{ src: string; alt: string } | null>(
     null
   );
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    Promise.all([
+      document.fonts.ready,
+      new Promise<void>(resolve => {
+        if (document.readyState === 'complete') return resolve();
+        window.addEventListener('load', () => resolve(), { once: true });
+      }),
+    ]).then(() => {
+      setReady(true);
+      document.body.style.overflow = '';
+    });
+  }, []);
 
   return (
     <>
+      {/* Loading overlay — blocks scroll until page is ready */}
+      {!ready && <div className='loading-overlay' />}
+
       {/* Background music */}
       <audio
         ref={audio => {
