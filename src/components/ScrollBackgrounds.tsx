@@ -7,22 +7,24 @@ import './ScrollBackgrounds.css';
 gsap.registerPlugin(ScrollTrigger);
 
 /*
- * Three fixed video layers with scroll-driven switching:
- *   [0] background.mp4 — intro (0-100vh) and easter egg (300-400vh)
+ * Four fixed video layers with scroll-driven switching:
+ *   [0] background.mp4 — intro (0-100vh) and easter egg (400-500vh)
  *   [1] bg2.webm       — poster 1 zone (100-200vh)
  *   [2] bg3.webm       — poster 2 zone (200-300vh)
+ *   [3] bg4.webm       — poster 3 zone (300-400vh)
  */
 
-type ActiveLayer = 'video' | 'bg2' | 'bg3';
+type ActiveLayer = 'video' | 'bg2' | 'bg3' | 'bg4';
 
 const ScrollBackgrounds: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const bg2Ref = useRef<HTMLVideoElement>(null);
   const bg3Ref = useRef<HTMLVideoElement>(null);
+  const bg4Ref = useRef<HTMLVideoElement>(null);
   const [activeLayer, setActiveLayer] = useState<ActiveLayer>('video');
 
-  const videoMap = { video: videoRef, bg2: bg2Ref, bg3: bg3Ref };
+  const videoMap = { video: videoRef, bg2: bg2Ref, bg3: bg3Ref, bg4: bg4Ref };
 
   // Play/pause based on active layer
   useEffect(() => {
@@ -90,8 +92,24 @@ const ScrollBackgrounds: React.FC = () => {
           end: clamp(p2Top + p2H + vh * 0.2),
           onEnter: () => setActiveLayer('bg3'),
           onLeaveBack: () => setActiveLayer('bg2'),
-          onLeave: () => setActiveLayer('video'),
+          onLeave: () => setActiveLayer('bg4'),
           onEnterBack: () => setActiveLayer('bg3'),
+        });
+      }
+
+      if (posters.length > 2) {
+        const p3Top = posters[2].offsetTop;
+        const p3H = posters[2].offsetHeight;
+
+        // bg4: activate when poster 3 enters, deactivate when it leaves
+        ScrollTrigger.create({
+          trigger: containerRef.current,
+          start: clamp(p3Top - vh * 0.5),
+          end: clamp(p3Top + p3H + vh * 0.2),
+          onEnter: () => setActiveLayer('bg4'),
+          onLeaveBack: () => setActiveLayer('bg3'),
+          onLeave: () => setActiveLayer('video'),
+          onEnterBack: () => setActiveLayer('bg4'),
         });
       }
 
@@ -106,7 +124,7 @@ const ScrollBackgrounds: React.FC = () => {
             start: fadeStart,
             end: fadeEnd,
             onEnter: () => setActiveLayer('video'),
-            onLeaveBack: () => setActiveLayer('bg3'),
+            onLeaveBack: () => setActiveLayer('bg4'),
           });
         }
       }
@@ -114,6 +132,12 @@ const ScrollBackgrounds: React.FC = () => {
 
     return () => ctx.revert();
   }, []);
+
+  const forceRestart = (e: React.SyntheticEvent<HTMLVideoElement>) => {
+    const el = e.currentTarget;
+    el.currentTime = 0;
+    void el.play().catch(() => {});
+  };
 
   return (
     <div className='scroll-bg' ref={containerRef}>
@@ -129,6 +153,7 @@ const ScrollBackgrounds: React.FC = () => {
           loop
           playsInline
           preload='metadata'
+          onEnded={forceRestart}
         >
           <source src='./background.mp4' type='video/mp4' />
         </video>
@@ -145,6 +170,7 @@ const ScrollBackgrounds: React.FC = () => {
           loop
           playsInline
           preload='metadata'
+          onEnded={forceRestart}
         >
           <source src='./bg2.webm' type='video/webm' />
         </video>
@@ -161,8 +187,26 @@ const ScrollBackgrounds: React.FC = () => {
           loop
           playsInline
           preload='metadata'
+          onEnded={forceRestart}
         >
           <source src='./bg3.webm' type='video/webm' />
+        </video>
+      </div>
+
+      {/* bg4.webm — poster 3 */}
+      <div
+        className={`scroll-bg__layer ${activeLayer === 'bg4' ? 'scroll-bg__layer--active' : ''}`}
+      >
+        <video
+          ref={bg4Ref}
+          className='scroll-bg__video'
+          muted
+          loop
+          playsInline
+          preload='metadata'
+          onEnded={forceRestart}
+        >
+          <source src='./bg4.webm' type='video/webm' />
         </video>
       </div>
     </div>

@@ -3,9 +3,9 @@ $bg-color: #000000;
 $text-color: #ffffff;
 $accent-color: #ff0000;
 $purple-color: #a855f7;
-$font-title: 'Orbitron', sans-serif;
-$font-heading: 'Russo One', sans-serif;
-$font-body: 'Rajdhani', sans-serif;
+$font-title: 'Anton', sans-serif;
+$font-heading: 'Oswald', sans-serif;
+$font-body: 'Unbounded', sans-serif;
 
 // Runtime-overridable font roles (see src/components/FontSwitcher.tsx)
 :root {
@@ -68,7 +68,7 @@ body {
 
 // Scroll container
 .scroll-container {
-  height: 400vh;
+  height: 500vh;
   position: relative;
 }
 
@@ -140,12 +140,24 @@ body {
     flex-direction: row-reverse;
   }
 
+  &--image-left {
+    .poster-section__image {
+      margin-left: 0;
+      margin-right: auto;
+      max-width: 400px;
+    }
+  }
+
   &:nth-of-type(2) {
     top: 100vh;
   }
 
   &:nth-of-type(3) {
     top: 200vh;
+  }
+
+  &:nth-of-type(4) {
+    top: 300vh;
   }
 
   &__image {
@@ -180,6 +192,28 @@ body {
 
     &--distributed {
       justify-content: space-between;
+    }
+
+    &--rules {
+      justify-content: center;
+      gap: 8px;
+    }
+  }
+
+  &__rules {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+
+    .split-parent {
+      display: block !important;
+      width: 100%;
+    }
+
+    p {
+      font-size: clamp(0.7rem, 1.4vw, 1rem);
+      line-height: 1.4;
+      color: rgba(255, 255, 255, 0.85);
     }
   }
 
@@ -294,6 +328,11 @@ body {
     // Formats poster — keep the alternating "chess" text layout,
     // each block just spans the full width of the phone
     &__format {
+      width: 100%;
+    }
+
+    // Rules poster — full width text block
+    &__rules {
       width: 100%;
     }
   }

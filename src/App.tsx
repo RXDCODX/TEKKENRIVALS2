@@ -240,6 +240,99 @@ const AppContent: React.FC = () => {
           />
         </div>
 
+        {/* Poster 3 — Rules */}
+        <div className='poster-section poster-section--image-left'>
+          <img
+            src='/tekken_rivals2_styled_v3.png'
+            alt='TEKKEN RIVALS 2 Rules'
+            className='poster-section__image'
+            onClick={() =>
+              setLightbox({
+                src: '/tekken_rivals2_styled_v3.png',
+                alt: 'TEKKEN RIVALS 2 Rules',
+              })
+            }
+          />
+          <div className='poster-section__text poster-section__text--rules'>
+            <div className='poster-section__title'>
+              <SplitText
+                text='TEKKEN RIVALS 2™ PRIME'
+                tag='h2'
+                splitType='chars'
+                className='split-title'
+                duration={1.5}
+                delay={80}
+              />
+            </div>
+            <div className='poster-section__rules'>
+              <SplitText
+                text='Double Elimination FT2. Loser quarterfinals, Loser finals, Winner finals, Grand Final — FT3.'
+                tag='p'
+                splitType='words'
+                duration={1}
+                delay={20}
+                textAlign='left'
+              />
+              <SplitText
+                text='Арена — рандом. Проигравший вправе нажать рематч на той же арене по договорённости с противником.'
+                tag='p'
+                splitType='words'
+                duration={1}
+                delay={20}
+                textAlign='left'
+              />
+              <SplitText
+                text='Лузер пик персонажа разрешён.'
+                tag='p'
+                splitType='words'
+                duration={1}
+                delay={20}
+                textAlign='left'
+              />
+              <SplitText
+                text='Вызывающие мигрень кастомайзы и грим рипперы — запрещены.'
+                tag='p'
+                splitType='words'
+                duration={1}
+                delay={20}
+                textAlign='left'
+              />
+              <SplitText
+                text='WiFi — ЗАПРЕЩЕН. Любые проблемы с коннектом или производительностью PC с вашей стороны — дисквалификация.'
+                tag='p'
+                splitType='words'
+                duration={1}
+                delay={20}
+                textAlign='left'
+              />
+              <SplitText
+                text='При любом спорном моменте связанным с коннектом, дисквалификацию получает противник с худшим коннектом до админов (Москва, Санкт-Петербург).'
+                tag='p'
+                splitType='words'
+                duration={1}
+                delay={20}
+                textAlign='left'
+              />
+              <SplitText
+                text='Организатор оставляет за собой право дисквалифицировать любого участника без объяснения причин. Будьте благоразумны.'
+                tag='p'
+                splitType='words'
+                duration={1}
+                delay={20}
+                textAlign='left'
+              />
+              <SplitText
+                text='В случае, когда коннект между двумя игроками не проходит, результаты будут определены жеребьёвкой.'
+                tag='p'
+                splitType='words'
+                duration={1}
+                delay={20}
+                textAlign='left'
+              />
+            </div>
+          </div>
+        </div>
+
         {/* Easter egg at the very bottom */}
         <div className='easter-egg'>
           <div className='easter-egg__content'>
