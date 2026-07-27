@@ -285,6 +285,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@gsap/react@npm:^2.1.2":
+  version: 2.1.2
+  resolution: "@gsap/react@npm:2.1.2"
+  peerDependencies:
+    gsap: ^3.12.5
+    react: ">=17"
+  checksum: 10c0/d0285391cfd7cef8125e6ddf81a063121bdb92ddf633d76c6144d8b93e3b7f7d837ec75f1fda8fd33d7efac0ad4c1aad89647e81446e9363012ada7db9f67daf
+  languageName: node
+  linkType: hard
+
 "@humanfs/core@npm:^0.19.2":
   version: 0.19.2
   resolution: "@humanfs/core@npm:0.19.2"
@@ -1947,6 +1957,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"gsap@npm:^3.15.0":
+  version: 3.15.0
+  resolution: "gsap@npm:3.15.0"
+  checksum: 10c0/5d86de72cb0bd6b20502c34c329a83a7d679979731bb465164407b7a5225aa61d612beee740eea36258622897c116cd2ca35320d530b7cf68bad62522361fcf7
+  languageName: node
+  linkType: hard
+
 "has-flag@npm:^4.0.0":
   version: 4.0.0
   resolution: "has-flag@npm:4.0.0"
@@ -2812,6 +2829,7 @@ __metadata:
   resolution: "tekkenrivals2@workspace:."
   dependencies:
     "@eslint/js": "npm:^9.33.0"
+    "@gsap/react": "npm:^2.1.2"
     "@types/node": "npm:^24.3.2"
     "@types/react": "npm:^19.1.10"
     "@types/react-dom": "npm:^19.1.7"
@@ -2826,6 +2844,7 @@ __metadata:
     eslint-plugin-unicorn: "npm:^72.0.0"
     gh-pages: "npm:^6.3.0"
     globals: "npm:^16.3.0"
+    gsap: "npm:^3.15.0"
     prettier: "npm:^3.6.2"
     react: "npm:^19.1.1"
     react-dom: "npm:^19.1.1"

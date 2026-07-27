@@ -2,6 +2,17 @@
 $bg-color: #000000;
 $text-color: #ffffff;
 $accent-color: #ff0000;
+$purple-color: #a855f7;
+$font-title: 'Anton', sans-serif;
+$font-heading: 'Oswald', sans-serif;
+$font-body: 'Unbounded', sans-serif;
+
+// Runtime-overridable font roles (see src/components/FontSwitcher.tsx)
+:root {
+  --font-title: #{$font-title};
+  --font-heading: #{$font-heading};
+  --font-body: #{$font-body};
+}
 
 // Reset
 *,
@@ -24,18 +35,17 @@ html:not(.dev) {
 body {
   background-color: $bg-color;
   color: $text-color;
-  font-family: 'Roboto', sans-serif;
+  font-family: var(--font-body);
   overflow-x: hidden;
 }
 
-// Background video — sticky, fills viewport
-.background-video {
-  position: sticky;
-  top: 0;
-  width: 100%;
-  height: 100vh;
-  object-fit: cover;
-  z-index: 0;
+// Loading overlay — blocks interaction until page is ready
+.loading-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: $bg-color;
+  pointer-events: all;
 }
 
 // Logo container — absolute, centered in first viewport
@@ -58,20 +68,21 @@ body {
 
 // Scroll container
 .scroll-container {
-  height: 5000px;
+  height: 500vh;
   position: relative;
 }
 
-// Easter egg at the bottom
+// Easter egg — bottom of 4th screen
 .easter-egg {
   position: absolute;
-  bottom: 100px;
+  bottom: 0;
   left: 0;
   width: 100%;
   display: flex;
   justify-content: center;
   opacity: 0.15;
   transition: opacity 0.5s ease;
+  z-index: 999;
 
   &:hover {
     opacity: 1;
@@ -81,6 +92,7 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding-bottom: 100px;
   }
 
   &__avatars {
@@ -107,6 +119,221 @@ body {
       transform: scale(1.15);
       border-color: $accent-color;
       box-shadow: 0 0 15px rgba(255, 0, 0, 0.4);
+    }
+  }
+}
+
+// Poster sections
+.poster-section {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 92%;
+  max-width: 1600px;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  gap: 40px;
+  z-index: 10;
+
+  &--reversed {
+    flex-direction: row-reverse;
+  }
+
+  &--image-left {
+    .poster-section__image {
+      margin-left: 0;
+      margin-right: auto;
+      max-width: 400px;
+    }
+  }
+
+  &:nth-of-type(2) {
+    top: 100vh;
+  }
+
+  &:nth-of-type(3) {
+    top: 200vh;
+  }
+
+  &:nth-of-type(4) {
+    top: 300vh;
+  }
+
+  &__image {
+    flex-shrink: 0;
+    width: 30%;
+    max-width: 380px;
+    margin-left: auto;
+    border-radius: 12px;
+    object-fit: cover;
+    box-shadow: 0 0 40px rgba(255, 0, 0, 0.15);
+    cursor: pointer;
+    transition:
+      transform 0.3s ease,
+      box-shadow 0.3s ease;
+
+    &:hover {
+      transform: scale(1.03);
+      box-shadow: 0 0 60px rgba(168, 85, 247, 0.3);
+    }
+  }
+
+  &__text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+    min-width: 0;
+
+    &--formats {
+      width: 100%;
+    }
+
+    &--distributed {
+      justify-content: space-between;
+    }
+
+    &--rules {
+      justify-content: center;
+      gap: 8px;
+    }
+  }
+
+  &__rules {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+
+    .split-parent {
+      display: block !important;
+      width: 100%;
+    }
+
+    p {
+      font-size: clamp(0.7rem, 1.4vw, 1rem);
+      line-height: 1.4;
+      color: rgba(255, 255, 255, 0.85);
+    }
+  }
+
+  &__title {
+    text-align: center;
+
+    .split-title {
+      font-family: var(--font-heading);
+      font-size: clamp(1.4rem, 4vw, 3rem);
+      letter-spacing: 2px;
+    }
+  }
+
+  &__center {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    width: 100%;
+
+    > * {
+      width: 100%;
+    }
+  }
+
+  &__bottom {
+    margin-top: auto;
+
+    .split-parent {
+      display: block !important;
+      width: 100%;
+    }
+  }
+
+  &__line {
+    font-size: clamp(0.9rem, 2.2vw, 1.6rem);
+    line-height: 1.5;
+    white-space: nowrap;
+  }
+
+  &__format {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 8px 0;
+
+    &--right {
+      align-items: flex-end;
+      text-align: right;
+    }
+
+    .split-heading {
+      font-family: var(--font-title);
+      font-size: clamp(0.85rem, 2.2vw, 1.6rem);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+  }
+
+  &__link {
+    display: inline-block;
+    color: $purple-color;
+    font-family: var(--font-body);
+    font-size: clamp(0.8rem, 1.8vw, 1.3rem);
+    font-weight: 700;
+    text-decoration: none;
+    transition: opacity 0.3s ease;
+
+    &:hover {
+      opacity: 0.7;
+    }
+  }
+}
+
+// Poster responsive — modern mobile stacking: poster image on top,
+// full-width text container below it
+@media (max-width: 768px) {
+  .poster-section {
+    flex-direction: column;
+    width: 100%;
+    max-width: 100%;
+    padding: 0 20px;
+    gap: 28px;
+
+    &--reversed {
+      flex-direction: column;
+    }
+
+    &__image {
+      width: 100%;
+      max-width: 100%;
+      // Always render above the text, regardless of DOM order
+      order: -1;
+    }
+
+    &__text {
+      width: 100%;
+    }
+
+    // Announcement poster — a single centered column is enough on mobile
+    &__text--distributed {
+      align-items: center;
+
+      .split-parent {
+        text-align: center !important;
+      }
+    }
+
+    &__line {
+      text-align: center;
+    }
+
+    // Formats poster — keep the alternating "chess" text layout,
+    // each block just spans the full width of the phone
+    &__format {
+      width: 100%;
+    }
+
+    // Rules poster — full width text block
+    &__rules {
+      width: 100%;
     }
   }
 }
