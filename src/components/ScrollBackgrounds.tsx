@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, lazy, Suspense } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -6,59 +6,52 @@ import './ScrollBackgrounds.css';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const Dither = lazy(() => import('./Dither'));
-
 /*
- * Two layers: video (intro/outro) and dither (both posters).
- * Dither shifts colors via shader uniforms — no React re-render.
+ * Three fixed video layers with scroll-driven switching:
+ *   [0] background.mp4 — intro (0-100vh) and easter egg (300-400vh)
+ *   [1] bg2.webm       — poster 1 zone (100-200vh)
+ *   [2] bg3.webm       — poster 2 zone (200-300vh)
  */
+
+type ActiveLayer = 'video' | 'bg2' | 'bg3';
 
 const ScrollBackgrounds: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const videoElRef = useRef<HTMLVideoElement>(null);
-  const [showVideo, setShowVideo] = useState(true);
-  const [mountEffects, setMountEffects] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const bg2Ref = useRef<HTMLVideoElement>(null);
+  const bg3Ref = useRef<HTMLVideoElement>(null);
+  const [activeLayer, setActiveLayer] = useState<ActiveLayer>('video');
 
-  useEffect(() => {
-    videoElRef.current?.play().catch(() => {});
-  }, []);
+  const videoMap = { video: videoRef, bg2: bg2Ref, bg3: bg3Ref };
 
+  // Play/pause based on active layer
   useEffect(() => {
-    const onScroll = () => {
-      if (window.scrollY > window.innerHeight * 0.5 && !mountEffects) {
-        setMountEffects(true);
+    for (const [key, ref] of Object.entries(videoMap)) {
+      const el = ref.current;
+      if (!el) continue;
+      if (key === activeLayer && !document.hidden) {
+        void el.play().catch(() => {});
+      } else {
+        el.pause();
       }
-    };
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
-  }, [mountEffects]);
-
-  // Pause video when not visible
-  useEffect(() => {
-    const video = videoElRef.current;
-    if (!video) return;
-    if (showVideo && !document.hidden) {
-      void video.play().catch(() => {});
-    } else {
-      video.pause();
     }
-  }, [showVideo]);
+  }, [activeLayer]);
 
+  // Visibility change
   useEffect(() => {
     const onVisibility = () => {
-      const video = videoElRef.current;
-      if (!video) return;
       if (document.hidden) {
-        video.pause();
-      } else if (showVideo) {
-        void video.play().catch(() => {});
+        Object.values(videoMap).forEach(ref => ref.current?.pause());
+      } else {
+        const el = videoMap[activeLayer]?.current;
+        if (el) void el.play().catch(() => {});
       }
     };
     document.addEventListener('visibilitychange', onVisibility);
     return () => document.removeEventListener('visibilitychange', onVisibility);
-  }, [showVideo]);
+  }, [activeLayer]);
 
-  // ScrollTrigger: show video → hide video when poster 1 enters → show video at easter egg
+  // ScrollTrigger
   useEffect(() => {
     if (!containerRef.current) return;
 
@@ -72,13 +65,33 @@ const ScrollBackgrounds: React.FC = () => {
     const ctx = gsap.context(() => {
       if (posters.length > 0) {
         const p1Top = posters[0].offsetTop;
+        const p1H = posters[0].offsetHeight;
 
-        // Hide video when poster 1 enters, show when scrolling back to top
+        // bg2: activate when poster 1 enters, deactivate when it leaves
         ScrollTrigger.create({
           trigger: containerRef.current,
           start: clamp(p1Top - vh * 0.5),
-          onEnter: () => setShowVideo(false),
-          onLeaveBack: () => setShowVideo(true),
+          end: clamp(p1Top + p1H + vh * 0.2),
+          onEnter: () => setActiveLayer('bg2'),
+          onLeaveBack: () => setActiveLayer('video'),
+          onLeave: () => setActiveLayer('bg3'),
+          onEnterBack: () => setActiveLayer('bg2'),
+        });
+      }
+
+      if (posters.length > 1) {
+        const p2Top = posters[1].offsetTop;
+        const p2H = posters[1].offsetHeight;
+
+        // bg3: activate when poster 2 enters, deactivate when it leaves
+        ScrollTrigger.create({
+          trigger: containerRef.current,
+          start: clamp(p2Top - vh * 0.5),
+          end: clamp(p2Top + p2H + vh * 0.2),
+          onEnter: () => setActiveLayer('bg3'),
+          onLeaveBack: () => setActiveLayer('bg2'),
+          onLeave: () => setActiveLayer('video'),
+          onEnterBack: () => setActiveLayer('bg3'),
         });
       }
 
@@ -86,13 +99,14 @@ const ScrollBackgrounds: React.FC = () => {
         const eggTop = easterEgg.offsetTop;
         const fadeStart = clamp(eggTop - vh);
         const fadeEnd = clamp(eggTop + vh * 0.3);
+
         if (fadeEnd > fadeStart) {
           ScrollTrigger.create({
             trigger: containerRef.current,
             start: fadeStart,
             end: fadeEnd,
-            onEnter: () => setShowVideo(true),
-            onLeaveBack: () => setShowVideo(false),
+            onEnter: () => setActiveLayer('video'),
+            onLeaveBack: () => setActiveLayer('bg3'),
           });
         }
       }
@@ -103,11 +117,12 @@ const ScrollBackgrounds: React.FC = () => {
 
   return (
     <div className='scroll-bg' ref={containerRef}>
+      {/* background.mp4 — intro + outro */}
       <div
-        className={`scroll-bg__layer scroll-bg__layer--video ${showVideo ? 'scroll-bg__layer--active' : ''}`}
+        className={`scroll-bg__layer scroll-bg__layer--video ${activeLayer === 'video' ? 'scroll-bg__layer--active' : ''}`}
       >
         <video
-          ref={videoElRef}
+          ref={videoRef}
           className='scroll-bg__video'
           autoPlay
           muted
@@ -119,23 +134,37 @@ const ScrollBackgrounds: React.FC = () => {
         </video>
       </div>
 
-      {mountEffects && (
-        <div
-          className={`scroll-bg__layer ${!showVideo ? 'scroll-bg__layer--active' : ''}`}
+      {/* bg2.webm — poster 1 */}
+      <div
+        className={`scroll-bg__layer ${activeLayer === 'bg2' ? 'scroll-bg__layer--active' : ''}`}
+      >
+        <video
+          ref={bg2Ref}
+          className='scroll-bg__video'
+          muted
+          loop
+          playsInline
+          preload='metadata'
         >
-          <Suspense fallback={null}>
-            <Dither
-              waveSpeed={0.05}
-              waveFrequency={3}
-              waveAmplitude={0.3}
-              colorNum={4}
-              pixelSize={2}
-              enableMouseInteraction={true}
-              mouseRadius={1}
-            />
-          </Suspense>
-        </div>
-      )}
+          <source src='./bg2.webm' type='video/webm' />
+        </video>
+      </div>
+
+      {/* bg3.webm — poster 2 */}
+      <div
+        className={`scroll-bg__layer ${activeLayer === 'bg3' ? 'scroll-bg__layer--active' : ''}`}
+      >
+        <video
+          ref={bg3Ref}
+          className='scroll-bg__video'
+          muted
+          loop
+          playsInline
+          preload='metadata'
+        >
+          <source src='./bg3.webm' type='video/webm' />
+        </video>
+      </div>
     </div>
   );
 };
