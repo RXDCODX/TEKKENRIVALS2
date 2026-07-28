@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
-import { AudioProvider } from './contexts/AudioContext';
-import { useAudio } from './hooks/useAudio';
 import AudioToggleButton from './components/AudioToggleButton';
-import SplitText from './components/SplitText';
+import FontSwitcher from './components/FontSwitcher';
 import Lightbox from './components/Lightbox';
 import ScrollBackgrounds from './components/ScrollBackgrounds';
-import FontSwitcher from './components/FontSwitcher';
+import SplitText from './components/SplitText';
+import { AudioProvider } from './contexts/AudioContext';
+import { useAudio } from './hooks/useAudio';
 
 const AppContent: React.FC = () => {
   const { setBackgroundMusic } = useAudio();
@@ -14,6 +14,7 @@ const AppContent: React.FC = () => {
     null
   );
   const [ready, setReady] = useState(false);
+  const [showReportBtn, setShowReportBtn] = useState(false);
 
   useEffect(() => {
     document.body.style.overflow = 'hidden';
@@ -27,6 +28,11 @@ const AppContent: React.FC = () => {
       setReady(true);
       document.body.style.overflow = '';
     });
+  }, []);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setShowReportBtn(true), 3000);
+    return () => clearTimeout(timer);
   }, []);
 
   return (
@@ -60,7 +66,14 @@ const AppContent: React.FC = () => {
       <div className='scroll-container'>
         {/* Fixed logo in center of screen */}
         <div className='logo-container'>
-          <img src='/logo.png' alt='TEKKEN RIVALS 2' className='logo' />
+          <a
+            href='https://discord.com/invite/Panty-dungeon'
+            target='_blank'
+            rel='noopener noreferrer'
+            className='logo-link'
+          >
+            <img src='/logo.png' alt='TEKKEN RIVALS 2' className='logo' />
+          </a>
         </div>
 
         {/* Poster 1 — Season Announcement */}
@@ -240,8 +253,26 @@ const AppContent: React.FC = () => {
           />
         </div>
 
-        {/* Poster 3 — Rules */}
-        <div className='poster-section poster-section--image-left'>
+        {/* Poster 3 — PRIME (rules + wizard + hollow + date + buttons) */}
+        <div className='poster-section poster-section--prime'>
+          <div className='prime-hollow'>
+            <svg viewBox='0 0 600 120' xmlns='http://www.w3.org/2000/svg'>
+              <text
+                x='50%'
+                y='50%'
+                dominantBaseline='middle'
+                textAnchor='middle'
+                fill='none'
+                stroke='#ffffff'
+                strokeWidth='1.5'
+                fontFamily='Anton, sans-serif'
+                fontSize='120'
+              >
+                PRIME
+              </text>
+            </svg>
+          </div>
+
           <img
             src='/tekken_rivals2_styled_v3.png'
             alt='TEKKEN RIVALS 2 Rules'
@@ -253,10 +284,77 @@ const AppContent: React.FC = () => {
               })
             }
           />
-          <div className='poster-section__text poster-section__text--rules'>
+          <div className='poster-section__text poster-section__text--prime'>
+            <div className='prime-wizard'>
+              <div className='prime-wizard__header'>
+                <SplitText
+                  text='PRIME'
+                  tag='h2'
+                  splitType='chars'
+                  className='split-title'
+                  duration={1.5}
+                  delay={80}
+                />
+              </div>
+              <div className='prime-wizard__steps'>
+                <div className='prime-wizard__step'>
+                  <span className='prime-wizard__step-number'>1</span>
+                  <span className='prime-wizard__step-text'>
+                    Свободный вход
+                  </span>
+                </div>
+                <div className='prime-wizard__arrow' />
+                <div className='prime-wizard__step'>
+                  <span className='prime-wizard__step-number'>2</span>
+                  <span className='prime-wizard__step-text'>
+                    Зарабатывайте очки
+                  </span>
+                </div>
+                <div className='prime-wizard__arrow' />
+                <div className='prime-wizard__step'>
+                  <span className='prime-wizard__step-number'>3</span>
+                  <span className='prime-wizard__step-text'>
+                    Дойди до финалов
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div className='prime-date'>
+              начало возни
+              <br />
+              02.09.2026
+              <br />
+              15:00
+            </div>
+
+            <div className='prime-buttons'>
+              <a
+                href='https://www.twitch.tv/avicii75'
+                target='_blank'
+                rel='noopener noreferrer'
+                className='prime-buttons__stream'
+              >
+                Стрим
+              </a>
+              <a
+                href='https://challonge.com/TR2P'
+                target='_blank'
+                rel='noopener noreferrer'
+                className='prime-buttons__register'
+              >
+                Регистрация
+              </a>
+            </div>
+          </div>
+        </div>
+
+        {/* Poster 4 — Scoring & Points */}
+        <div className='poster-section'>
+          <div className='poster-section__text poster-section__text--scoring'>
             <div className='poster-section__title'>
               <SplitText
-                text='TEKKEN RIVALS 2™ PRIME'
+                text='TEKKEN RIVALS 2™ PRIME FINALS'
                 tag='h2'
                 splitType='chars'
                 className='split-title'
@@ -264,65 +362,69 @@ const AppContent: React.FC = () => {
                 delay={80}
               />
             </div>
-            <div className='poster-section__rules'>
+            <div className='poster-section__scoring'>
+              <div className='poster-section__scoring-row'>
+                <span className='poster-section__scoring-place'>1 место</span>
+                <span className='poster-section__scoring-dots' />
+                <span className='poster-section__scoring-points'>11</span>
+              </div>
+              <div className='poster-section__scoring-row'>
+                <span className='poster-section__scoring-place'>2 место</span>
+                <span className='poster-section__scoring-dots' />
+                <span className='poster-section__scoring-points'>10</span>
+              </div>
+              <div className='poster-section__scoring-row'>
+                <span className='poster-section__scoring-place'>3 место</span>
+                <span className='poster-section__scoring-dots' />
+                <span className='poster-section__scoring-points'>8</span>
+              </div>
+              <div className='poster-section__scoring-row'>
+                <span className='poster-section__scoring-place'>4 место</span>
+                <span className='poster-section__scoring-dots' />
+                <span className='poster-section__scoring-points'>7</span>
+              </div>
+              <div className='poster-section__scoring-row'>
+                <span className='poster-section__scoring-place'>5-6 место</span>
+                <span className='poster-section__scoring-dots' />
+                <span className='poster-section__scoring-points'>6</span>
+              </div>
+              <div className='poster-section__scoring-row'>
+                <span className='poster-section__scoring-place'>7-8 место</span>
+                <span className='poster-section__scoring-dots' />
+                <span className='poster-section__scoring-points'>5</span>
+              </div>
+              <div className='poster-section__scoring-row'>
+                <span className='poster-section__scoring-place'>
+                  9-12 место
+                </span>
+                <span className='poster-section__scoring-dots' />
+                <span className='poster-section__scoring-points'>4</span>
+              </div>
+              <div className='poster-section__scoring-row'>
+                <span className='poster-section__scoring-place'>
+                  13-16 место
+                </span>
+                <span className='poster-section__scoring-dots' />
+                <span className='poster-section__scoring-points'>3</span>
+              </div>
+              <div className='poster-section__scoring-row'>
+                <span className='poster-section__scoring-place'>
+                  17-32 место
+                </span>
+                <span className='poster-section__scoring-dots' />
+                <span className='poster-section__scoring-points'>2</span>
+              </div>
+              <div className='poster-section__scoring-row'>
+                <span className='poster-section__scoring-place'>
+                  33 место и ниже
+                </span>
+                <span className='poster-section__scoring-dots' />
+                <span className='poster-section__scoring-points'>1</span>
+              </div>
+            </div>
+            <div className='poster-section__scoring-info'>
               <SplitText
-                text='Double Elimination FT2. Loser quarterfinals, Loser finals, Winner finals, Grand Final — FT3.'
-                tag='p'
-                splitType='words'
-                duration={1}
-                delay={20}
-                textAlign='left'
-              />
-              <SplitText
-                text='Арена — рандом. Проигравший вправе нажать рематч на той же арене по договорённости с противником.'
-                tag='p'
-                splitType='words'
-                duration={1}
-                delay={20}
-                textAlign='left'
-              />
-              <SplitText
-                text='Лузер пик персонажа разрешён.'
-                tag='p'
-                splitType='words'
-                duration={1}
-                delay={20}
-                textAlign='left'
-              />
-              <SplitText
-                text='Вызывающие мигрень кастомайзы и грим рипперы — запрещены.'
-                tag='p'
-                splitType='words'
-                duration={1}
-                delay={20}
-                textAlign='left'
-              />
-              <SplitText
-                text='WiFi — ЗАПРЕЩЕН. Любые проблемы с коннектом или производительностью PC с вашей стороны — дисквалификация.'
-                tag='p'
-                splitType='words'
-                duration={1}
-                delay={20}
-                textAlign='left'
-              />
-              <SplitText
-                text='При любом спорном моменте связанным с коннектом, дисквалификацию получает противник с худшим коннектом до админов (Москва, Санкт-Петербург).'
-                tag='p'
-                splitType='words'
-                duration={1}
-                delay={20}
-                textAlign='left'
-              />
-              <SplitText
-                text='Организатор оставляет за собой право дисквалифицировать любого участника без объяснения причин. Будьте благоразумны.'
-                tag='p'
-                splitType='words'
-                duration={1}
-                delay={20}
-                textAlign='left'
-              />
-              <SplitText
-                text='В случае, когда коннект между двумя игроками не проходит, результаты будут определены жеребьёвкой.'
+                text='Топ 8 по итогам четырёх турниров попадают в TEKKEN RIVALS 2™ PRIME FINALS и сражаются по системе Round Robin.'
                 tag='p'
                 splitType='words'
                 duration={1}
@@ -372,6 +474,17 @@ const AppContent: React.FC = () => {
         isOpen={lightbox !== null}
         onClose={() => setLightbox(null)}
       />
+
+      {showReportBtn && (
+        <a
+          href='https://discord.com/invite/Panty-dungeon'
+          target='_blank'
+          rel='noopener noreferrer'
+          className='report-btn'
+        >
+          пожаловаться на шрифты
+        </a>
+      )}
     </>
   );
 };

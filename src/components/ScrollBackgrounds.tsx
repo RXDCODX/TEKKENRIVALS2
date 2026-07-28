@@ -101,15 +101,29 @@ const ScrollBackgrounds: React.FC = () => {
         const p3Top = posters[2].offsetTop;
         const p3H = posters[2].offsetHeight;
 
-        // bg4: activate when poster 3 enters, deactivate when it leaves
+        // bg4: activate when poster 3 enters
         ScrollTrigger.create({
           trigger: containerRef.current,
           start: clamp(p3Top - vh * 0.5),
-          end: clamp(p3Top + p3H + vh * 0.2),
+          end: clamp(p3Top + p3H),
           onEnter: () => setActiveLayer('bg4'),
           onLeaveBack: () => setActiveLayer('bg3'),
+        });
+      }
+
+      if (posters.length > 3) {
+        const p4Top = posters[3].offsetTop;
+        const p4H = posters[3].offsetHeight;
+
+        // video (background.mp4) for poster 4 — same as intro & easter egg
+        ScrollTrigger.create({
+          trigger: containerRef.current,
+          start: clamp(p4Top - vh * 0.5),
+          end: clamp(p4Top + p4H + vh * 0.2),
+          onEnter: () => setActiveLayer('video'),
+          onLeaveBack: () => setActiveLayer('bg4'),
           onLeave: () => setActiveLayer('video'),
-          onEnterBack: () => setActiveLayer('bg4'),
+          onEnterBack: () => setActiveLayer('video'),
         });
       }
 
@@ -124,7 +138,7 @@ const ScrollBackgrounds: React.FC = () => {
             start: fadeStart,
             end: fadeEnd,
             onEnter: () => setActiveLayer('video'),
-            onLeaveBack: () => setActiveLayer('bg4'),
+            onLeaveBack: () => setActiveLayer('video'),
           });
         }
       }
