@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import AudioToggleButton from './components/AudioToggleButton';
 import FontSwitcher from './components/FontSwitcher';
 import Lightbox from './components/Lightbox';
+import PrimeDate from './components/PrimeDate';
 import ScrollBackgrounds from './components/ScrollBackgrounds';
 import SplitText from './components/SplitText';
 import { AudioProvider } from './contexts/AudioContext';
@@ -320,13 +321,7 @@ const AppContent: React.FC = () => {
               </div>
             </div>
 
-            <div className='prime-date'>
-              начало возни
-              <br />
-              02.09.2026
-              <br />
-              15:00
-            </div>
+            <PrimeDate />
 
             <div className='prime-buttons'>
               <a

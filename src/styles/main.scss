@@ -503,6 +503,13 @@ body {
   font-size: clamp(1rem, 2.5vw, 1.6rem);
   line-height: 1.8;
   color: rgba(255, 255, 255, 0.9);
+  cursor: default;
+  min-height: 5.4em;
+
+  &__countdown {
+    color: $accent-color;
+    text-shadow: 0 0 15px rgba(255, 0, 0, 0.4);
+  }
 }
 
 // PRIME buttons — audio button style with colored accents
