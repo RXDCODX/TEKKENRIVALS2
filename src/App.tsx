@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import AudioToggleButton from './components/AudioToggleButton';
+import ProgressiveImage from './components/ProgressiveImage';
 import FontSwitcher from './components/FontSwitcher';
 import Lightbox from './components/Lightbox';
 import PrimeDate from './components/PrimeDate';
@@ -79,8 +80,9 @@ const AppContent: React.FC = () => {
 
         {/* Poster 1 — Season Announcement */}
         <div className='poster-section'>
-          <img
+          <ProgressiveImage
             src='/tk_rival_poster4.jpg'
+            placeholder='/thumb/tk_rival_poster4.jpg'
             alt='TEKKEN RIVALS 2 Season'
             className='poster-section__image'
             onClick={() =>
@@ -241,10 +243,10 @@ const AppContent: React.FC = () => {
               />
             </div>
           </div>
-          <img
+          <ProgressiveImage
             src='/photo_2026-07-25_20-53-50.jpg'
+            placeholder='/thumb/photo_2026-07-25_20-53-50.jpg'
             alt='TEKKEN RIVALS 2 Formats'
-            loading='lazy'
             className='poster-section__image'
             onClick={() =>
               setLightbox({
@@ -275,10 +277,10 @@ const AppContent: React.FC = () => {
             </svg>
           </div>
 
-          <img
+          <ProgressiveImage
             src='/tekken_rivals2_styled_v3.png'
+            placeholder='/thumb/tekken_rivals2_styled_v3.png'
             alt='TEKKEN RIVALS 2 Rules'
-            loading='lazy'
             className='poster-section__image'
             onClick={() =>
               setLightbox({

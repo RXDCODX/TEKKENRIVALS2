@@ -28,13 +28,6 @@ const VideoCycler: React.FC<VideoCyclerProps> = ({ src, type, isActive }) => {
     }
   }, [isActive, isPrimary]);
 
-  useEffect(() => {
-    if (isActive) {
-      const vid = videoARef.current;
-      if (vid) void vid.play().catch(() => {});
-    }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
   const handleTimeUpdate = (e: React.SyntheticEvent<HTMLVideoElement>) => {
     const vid = e.currentTarget;
     const isPrimaryCheck = isPrimaryRef.current;
@@ -83,7 +76,7 @@ const VideoCycler: React.FC<VideoCyclerProps> = ({ src, type, isActive }) => {
         className={`video-cycler__video ${isPrimary ? 'video-cycler__video--active' : 'video-cycler__video--inactive'}`}
         muted
         playsInline
-        preload='metadata'
+        preload={isActive ? 'metadata' : 'none'}
         loop
         onTimeUpdate={handleTimeUpdate}
         onLoadedMetadata={handleLoadedMetadata}
@@ -95,7 +88,7 @@ const VideoCycler: React.FC<VideoCyclerProps> = ({ src, type, isActive }) => {
         className={`video-cycler__video ${!isPrimary ? 'video-cycler__video--active' : 'video-cycler__video--inactive'}`}
         muted
         playsInline
-        preload='metadata'
+        preload={isActive ? 'metadata' : 'none'}
         loop
         onTimeUpdate={handleTimeUpdate}
         onLoadedMetadata={handleLoadedMetadata}

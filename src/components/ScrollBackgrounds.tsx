@@ -3,6 +3,12 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import VideoCycler from './VideoCycler';
 
+import bg from '@/assets/video/background.mp4?url';
+import bg2 from '@/assets/video/bg2.webm?url';
+import bg3 from '@/assets/video/bg3.webm?url';
+import bg4 from '@/assets/video/bg4.webm?url';
+import bg5 from '@/assets/video/bg5.webm?url';
+
 import './ScrollBackgrounds.css';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -18,9 +24,33 @@ gsap.registerPlugin(ScrollTrigger);
 
 type ActiveLayer = 'video' | 'bg2' | 'bg3' | 'bg4' | 'bg5';
 
+const LAYER_ORDER: ActiveLayer[] = ['video', 'bg2', 'bg3', 'bg4', 'bg5'];
+
+function getMountedLayers(active: ActiveLayer): Set<ActiveLayer> {
+  const i = LAYER_ORDER.indexOf(active);
+  const set = new Set<ActiveLayer>();
+  for (let d = -1; d <= 1; d++) {
+    const idx = i + d;
+    if (idx >= 0 && idx < LAYER_ORDER.length) {
+      set.add(LAYER_ORDER[idx]);
+    }
+  }
+  return set;
+}
+
+const videoMap: Record<ActiveLayer, { src: string; type: string }> = {
+  video: { src: bg, type: 'video/mp4' },
+  bg2: { src: bg2, type: 'video/webm' },
+  bg3: { src: bg3, type: 'video/webm' },
+  bg4: { src: bg4, type: 'video/webm' },
+  bg5: { src: bg5, type: 'video/webm' },
+};
+
 const ScrollBackgrounds: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [activeLayer, setActiveLayer] = useState<ActiveLayer>('video');
+
+  const mountedLayers = getMountedLayers(activeLayer);
 
   // ScrollTrigger
   useEffect(() => {
@@ -115,60 +145,20 @@ const ScrollBackgrounds: React.FC = () => {
 
   return (
     <div className='scroll-bg' ref={containerRef}>
-      {/* background.mp4 — intro + easter egg */}
-      <div
-        className={`scroll-bg__layer ${activeLayer === 'video' ? 'scroll-bg__layer--active' : ''}`}
-      >
-        <VideoCycler
-          src='./background.mp4'
-          type='video/mp4'
-          isActive={activeLayer === 'video'}
-        />
-      </div>
-
-      {/* bg2.webm — poster 1 (ferrofluid) */}
-      <div
-        className={`scroll-bg__layer ${activeLayer === 'bg2' ? 'scroll-bg__layer--active' : ''}`}
-      >
-        <VideoCycler
-          src='./bg2.webm'
-          type='video/webm'
-          isActive={activeLayer === 'bg2'}
-        />
-      </div>
-
-      {/* bg3.webm — poster 2 (dither) */}
-      <div
-        className={`scroll-bg__layer ${activeLayer === 'bg3' ? 'scroll-bg__layer--active' : ''}`}
-      >
-        <VideoCycler
-          src='./bg3.webm'
-          type='video/webm'
-          isActive={activeLayer === 'bg3'}
-        />
-      </div>
-
-      {/* bg4.webm — poster 3 (pixel snow) */}
-      <div
-        className={`scroll-bg__layer ${activeLayer === 'bg4' ? 'scroll-bg__layer--active' : ''}`}
-      >
-        <VideoCycler
-          src='./bg4.webm'
-          type='video/webm'
-          isActive={activeLayer === 'bg4'}
-        />
-      </div>
-
-      {/* bg5.webm — poster 4 / FINALS (threads) */}
-      <div
-        className={`scroll-bg__layer ${activeLayer === 'bg5' ? 'scroll-bg__layer--active' : ''}`}
-      >
-        <VideoCycler
-          src='./bg5.webm'
-          type='video/webm'
-          isActive={activeLayer === 'bg5'}
-        />
-      </div>
+      {LAYER_ORDER.map(key => (
+        <div
+          key={key}
+          className={`scroll-bg__layer ${activeLayer === key ? 'scroll-bg__layer--active' : ''}`}
+        >
+          {mountedLayers.has(key) && (
+            <VideoCycler
+              src={videoMap[key].src}
+              type={videoMap[key].type}
+              isActive={activeLayer === key}
+            />
+          )}
+        </div>
+      ))}
     </div>
   );
 };
