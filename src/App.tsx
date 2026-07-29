@@ -49,9 +49,9 @@ const AppContent: React.FC = () => {
             setBackgroundMusic(audio);
           }
         }}
-        src='./sr.wav'
+        src='./sr.mp3'
         loop
-        preload='auto'
+        preload='metadata'
       />
 
       {/* Audio toggle button */}
@@ -244,6 +244,7 @@ const AppContent: React.FC = () => {
           <img
             src='/photo_2026-07-25_20-53-50.jpg'
             alt='TEKKEN RIVALS 2 Formats'
+            loading='lazy'
             className='poster-section__image'
             onClick={() =>
               setLightbox({
@@ -277,6 +278,7 @@ const AppContent: React.FC = () => {
           <img
             src='/tekken_rivals2_styled_v3.png'
             alt='TEKKEN RIVALS 2 Rules'
+            loading='lazy'
             className='poster-section__image'
             onClick={() =>
               setLightbox({
@@ -443,6 +445,7 @@ const AppContent: React.FC = () => {
                 <img
                   src='/avicii75.webp'
                   alt='AVICII75'
+                  loading='lazy'
                   className='easter-egg__avatar'
                 />
               </a>
@@ -455,6 +458,7 @@ const AppContent: React.FC = () => {
                 <img
                   src='https://avatars.githubusercontent.com/u/88150316'
                   alt='RXDCODX'
+                  loading='lazy'
                   className='easter-egg__avatar'
                 />
               </a>
