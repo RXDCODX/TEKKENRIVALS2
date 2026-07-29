@@ -1,5 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { useAudio } from '../hooks/useAudio';
+import { useIsMobile } from '../hooks/useIsMobile';
 import styles from './AudioToggleButton.module.scss';
 
 interface AudioToggleButtonProps {
@@ -16,6 +17,7 @@ const AudioToggleButton: React.FC<AudioToggleButtonProps> = ({
     volume,
     setVolume,
   } = useAudio();
+  const isMobile = useIsMobile();
   const [isHovered, setIsHovered] = useState(false);
 
   const handleToggle = () => {
@@ -53,6 +55,7 @@ const AudioToggleButton: React.FC<AudioToggleButtonProps> = ({
         onClick={handleToggle}
         title={!isMuted ? 'Выключить звук' : 'Включить звук'}
         aria-label={!isMuted ? 'Выключить звук' : 'Включить звук'}
+        aria-pressed={!isMuted}
       >
         <div className={styles.audioIcon}>
           {!isMuted ? (
@@ -67,21 +70,25 @@ const AudioToggleButton: React.FC<AudioToggleButtonProps> = ({
         </div>
       </button>
 
-      <div
-        className={`${styles.volumeSliderContainer} ${isHovered ? styles.sliderVisible : ''}`}
-      >
-        <input
-          type='range'
-          min='0'
-          max='1'
-          step='0.01'
-          value={volume}
-          onChange={handleVolumeChange}
-          className={styles.volumeSlider}
-          title={`Громкость: ${Math.round(volume * 100)}%`}
-          aria-label='Регулировка громкости'
-        />
-      </div>
+      {/* The slider only appears on hover, which no touch device can do, and
+          a phone already has hardware volume keys. Mute stays, the rest goes. */}
+      {!isMobile && (
+        <div
+          className={`${styles.volumeSliderContainer} ${isHovered ? styles.sliderVisible : ''}`}
+        >
+          <input
+            type='range'
+            min='0'
+            max='1'
+            step='0.01'
+            value={volume}
+            onChange={handleVolumeChange}
+            className={styles.volumeSlider}
+            title={`Громкость: ${Math.round(volume * 100)}%`}
+            aria-label='Регулировка громкости'
+          />
+        </div>
+      )}
     </div>
   );
 };

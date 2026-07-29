@@ -97,17 +97,20 @@
 // Адаптивность для мобильных устройств
 @media (max-width: 768px) {
   .audioControlContainer {
-    top: 15px;
-    right: 15px;
+    top: max(15px, env(safe-area-inset-top));
+    right: max(15px, env(safe-area-inset-right));
   }
 
   .audioToggleButton {
-    width: 45px;
-    height: 45px;
+    // 48px — минимальная комфортная цель для пальца
+    width: 48px;
+    height: 48px;
+    // Бесконечная пульсация зря жжёт батарею на телефоне
+    animation: none !important;
 
     .audioIcon {
-      width: 20px;
-      height: 20px;
+      width: 22px;
+      height: 22px;
     }
   }
 }

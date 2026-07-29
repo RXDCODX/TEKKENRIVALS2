@@ -2,8 +2,20 @@
   overflow: hidden;
   font-size: clamp(0.9rem, 2.2vw, 1.6rem);
   line-height: 1.4;
+  /* These blocks render as h2/h3 where the content calls for it. Inheriting
+     the weight keeps headings looking like the surrounding copy, which is how
+     they have always been designed. */
+  font-weight: inherit;
 }
 
 .split-parent * {
   overflow: visible;
+}
+
+/* Static (mobile) variant — nothing is split, so nothing needs clipping. */
+.split-parent--static {
+  display: block;
+  width: 100%;
+  overflow: visible;
+  overflow-wrap: break-word;
 }

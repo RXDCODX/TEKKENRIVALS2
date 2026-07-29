@@ -71,6 +71,13 @@ body {
   transform: translate(-50%, -50%);
   z-index: 10;
 
+  // The logo is the page's h1 — the only top-level heading on the site.
+  .logo-title {
+    font-size: inherit;
+    font-weight: inherit;
+    line-height: 0;
+  }
+
   .logo-link {
     display: block;
     line-height: 0;
@@ -218,6 +225,11 @@ body {
     flex-shrink: 0;
     width: 30%;
     max-width: 380px;
+    // The width/height attributes carry the intrinsic ratio so the box is
+    // reserved before the image lands. They are also presentational hints,
+    // though, and the height one would pin the poster to its full 3508px
+    // instead of letting it stretch to the row.
+    height: auto;
     margin-left: auto;
     border-radius: 12px;
     object-fit: cover;
@@ -686,66 +698,223 @@ a.prime-buttons__register {
   }
 }
 
-// Poster responsive — modern mobile stacking: poster image on top,
-// full-width text container below it
+// ─────────────────────────────────────────────────────────────────────────
+// Mobile
+//
+// Desktop is a 600vh filmstrip: every section is absolutely positioned at a
+// fixed `top`, sitting over full-screen video that scrolls past behind it.
+// None of that survives a phone — a section's content is taller than the
+// screen it was pinned to, so the sections would overlap and the video is
+// tens of megabytes of cellular data.
+//
+// So mobile collapses the whole thing into one ordinary scrolling column on
+// flat black: poster image, then its text, centred, one after another.
+// ─────────────────────────────────────────────────────────────────────────
 @media (max-width: 768px) {
-  .poster-section {
+  body {
+    // The 13-layer outline exists to lift text off the video backgrounds.
+    // There are none here, and it costs a repaint on every glyph.
+    text-shadow: none;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  // Body copy — the desktop clamp bottoms out at 14.4px on a phone, below
+  // what is comfortable to read.
+  .split-parent {
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  .scroll-container {
+    height: auto;
+    display: flex;
     flex-direction: column;
+    gap: 72px;
+    padding-bottom: 32px;
+  }
+
+  // Logo owns the first screenful, then the page scrolls normally.
+  .logo-container {
+    position: static;
+    transform: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100svh;
+    padding: 24px;
+
+    .logo-title {
+      line-height: 0;
+    }
+
+    .logo {
+      max-width: 88vw;
+      max-height: 62svh;
+    }
+  }
+
+  .poster-section {
+    // `relative` rather than `static` so .prime-hollow still has something to
+    // anchor to; the desktop `top` offsets are cleared just below.
+    position: relative;
+    left: auto;
+    transform: none;
+    flex-direction: column;
+    align-items: center;
     width: 100%;
     max-width: 100%;
-    padding: 0 20px;
-    gap: 28px;
+    gap: 24px;
+    padding-inline: max(20px, env(safe-area-inset-left))
+      max(20px, env(safe-area-inset-right));
+
+    // Same specificity as the desktop `:nth-of-type` offsets, declared later,
+    // so these win without reaching for !important.
+    &:nth-of-type(2),
+    &:nth-of-type(3),
+    &:nth-of-type(4),
+    &:nth-of-type(5) {
+      top: auto;
+    }
 
     &--reversed {
       flex-direction: column;
     }
 
+    // Full column width, height derived from the width/height attributes.
+    // Sizing off the intrinsic dimensions instead would collapse the poster
+    // to the size of its sub-kilobyte placeholder — a ~43px thumbnail that
+    // then jumps to full size — which is the layout shift those attributes
+    // are there to prevent.
     &__image {
+      order: -1; // poster above its text, whatever the DOM order says
       width: 100%;
       max-width: 100%;
-      // Always render above the text, regardless of DOM order
-      order: -1;
+      height: auto;
+      margin: 0 auto;
+      object-fit: contain;
     }
 
     &__text {
       width: 100%;
+      align-items: center;
+      text-align: center;
+      gap: 14px;
     }
 
-    // Announcement poster — a single centered column is enough on mobile
     &__text--distributed {
       align-items: center;
+    }
 
-      .split-parent {
-        text-align: center !important;
-      }
+    &__title .split-title {
+      font-size: clamp(1.65rem, 7.5vw, 2.4rem);
+      letter-spacing: 1px;
     }
 
     &__line {
       text-align: center;
+      // Desktop keeps each credit line on one line; a phone cannot.
+      white-space: normal;
+      font-size: 1rem;
+      line-height: 1.6;
     }
 
-    // Formats poster — keep the alternating "chess" text layout,
-    // each block just spans the full width of the phone
+    &__link {
+      // Comfortable tap target, and long URLs wrap instead of overflowing.
+      padding: 8px 4px;
+      font-size: 1rem;
+      overflow-wrap: anywhere;
+    }
+
+    // Formats poster — the alternating left/right "chess" layout reads as
+    // ragged noise on a narrow screen, so every block is simply centred and
+    // separated by a rule.
     &__format {
       width: 100%;
+      align-items: center;
+      text-align: center;
+      padding: 18px 0;
+
+      &--right {
+        align-items: center;
+        text-align: center;
+      }
+
+      & + & {
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .split-heading {
+        font-size: clamp(1.05rem, 4.6vw, 1.35rem);
+        letter-spacing: 1px;
+      }
     }
 
-    // Rules poster — full width text block
     &__rules {
       width: 100%;
+
+      p {
+        font-size: 0.95rem;
+        text-align: center;
+      }
     }
 
-    // Scoring poster — full width centered
+    // Scoring poster — the rows are place / dots / points and have to stay
+    // full width, so this one block opts out of the centring above.
     &__text--scoring {
       max-width: 100%;
-      align-items: center;
+      align-items: stretch;
+      text-align: left;
+    }
+
+    &__scoring-row {
+      padding: 10px 0;
+    }
+
+    &__scoring-place {
+      font-size: 0.95rem;
+    }
+
+    &__scoring-points {
+      font-size: 1.5rem;
+    }
+
+    &__scoring-info p {
+      font-size: 0.95rem;
+      text-align: center;
     }
   }
 
+  // PRIME poster — the rules sheet is a plain stacked image here, not a
+  // stretched column beside the text.
+  .poster-section--prime .poster-section__image {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    align-self: center;
+    object-fit: contain;
+  }
+
+  .poster-section--prime .poster-section__text--prime {
+    width: 100%;
+    flex: 0 0 auto;
+  }
+
   .prime-wizard {
+    // Its own clamp bottoms out well below the other section titles, which
+    // left PRIME looking like a subheading next to them.
+    &__header .split-title {
+      font-size: clamp(1.65rem, 7.5vw, 2.4rem);
+      letter-spacing: 1px;
+    }
+
     &__steps {
       flex-direction: column;
       gap: 12px;
+    }
+
+    &__step-text {
+      font-size: 0.95rem;
+      max-width: 220px;
     }
 
     &__arrow {
@@ -765,14 +934,62 @@ a.prime-buttons__register {
     }
   }
 
+  .prime-date {
+    font-size: 1.05rem;
+  }
+
   .prime-buttons {
     flex-direction: column;
     align-items: center;
+    width: 100%;
 
     a {
       width: 100%;
       max-width: 280px;
+      padding: 14px 24px; // 48px tall — a comfortable tap target
+      font-size: 1rem;
       text-align: center;
     }
+  }
+
+  // Easter egg — the desktop version hides at 0.15 opacity and reveals on
+  // hover, which on a touch screen means two links nobody can find.
+  .easter-egg {
+    position: static;
+    opacity: 0.7;
+
+    &__content {
+      padding-top: 8px;
+      padding-bottom: max(24px, env(safe-area-inset-bottom));
+    }
+
+    &__avatars {
+      gap: 28px;
+    }
+
+    &__avatar {
+      width: 56px;
+      height: 56px;
+    }
+  }
+
+  .report-btn {
+    bottom: max(20px, env(safe-area-inset-bottom));
+    margin-left: max(12px, env(safe-area-inset-left));
+    padding: 8px 14px;
+    font-size: 0.7rem;
+  }
+}
+
+// Honour the OS-level "reduce motion" setting. Several elements here loop
+// their animation forever, which is exactly what this setting is for.
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

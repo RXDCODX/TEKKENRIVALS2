@@ -46,8 +46,23 @@ const PrimeDate: React.FC = () => {
   return (
     <div
       className='prime-date'
+      // Hover alone would hide the countdown from every touch device, so the
+      // same reveal is also a tap (and a keyboard activation) away.
+      role={hasCountdown ? 'button' : undefined}
+      tabIndex={hasCountdown ? 0 : undefined}
+      aria-expanded={hasCountdown ? hovered : undefined}
+      aria-label={
+        hasCountdown ? 'Показать обратный отсчёт до турнира' : undefined
+      }
       onMouseEnter={() => hasCountdown && setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      onClick={() => hasCountdown && setHovered(prev => !prev)}
+      onKeyDown={event => {
+        if (hasCountdown && (event.key === 'Enter' || event.key === ' ')) {
+          event.preventDefault();
+          setHovered(prev => !prev);
+        }
+      }}
     >
       {hovered && timeLeft ? (
         <span className='prime-date__countdown'>
