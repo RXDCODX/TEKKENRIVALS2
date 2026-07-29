@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo } from 'react';
 
-const TOURNAMENT_DATE = new Date('2026-08-02T15:00:00+03:00');
+const TOURNAMENT_DATE = new Date('2026-09-02T15:00:00+03:00');
 
 interface TimeLeft {
   days: number;
@@ -20,6 +20,12 @@ function getTimeLeft(): TimeLeft | null {
     seconds: Math.floor((diff / 1000) % 60),
   };
 }
+
+const localDate = TOURNAMENT_DATE.toLocaleDateString('ru-RU');
+const localTime = TOURNAMENT_DATE.toLocaleTimeString('ru-RU', {
+  hour: '2-digit',
+  minute: '2-digit',
+});
 
 const PrimeDate: React.FC = () => {
   const [hovered, setHovered] = useState(false);
@@ -54,9 +60,9 @@ const PrimeDate: React.FC = () => {
         <span className='prime-date__original'>
           {hovered ? 'возня идёт!' : 'начало возни'}
           <br />
-          02.09.2026
+          {localDate}
           <br />
-          15:00
+          {localTime}
         </span>
       )}
     </div>
