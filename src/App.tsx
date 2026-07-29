@@ -1,15 +1,20 @@
-import { useEffect, useRef, useState } from 'react';
+import { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import AudioToggleButton from './components/AudioToggleButton';
 import ProgressiveImage from './components/ProgressiveImage';
 import FontSwitcher from './components/FontSwitcher';
 import Lightbox from './components/Lightbox';
 import PrimeDate from './components/PrimeDate';
-import ScrollBackgrounds from './components/ScrollBackgrounds';
 import SplitText from './components/SplitText';
 import { AudioProvider } from './contexts/AudioContext';
 import { useAudio } from './hooks/useAudio';
+import { useIsMobile } from './hooks/useIsMobile';
+
+// Five layers of full-screen video, ~86 MB all told. Behind a lazy boundary
+// so phones — which render on flat black — never request any of it.
+const ScrollBackgrounds = lazy(() => import('./components/ScrollBackgrounds'));
 
 const AppContent: React.FC = () => {
+  const isMobile = useIsMobile();
   const { setBackgroundMusic } = useAudio();
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [lightbox, setLightbox] = useState<{ src: string; alt: string } | null>(
@@ -61,21 +66,33 @@ const AppContent: React.FC = () => {
       {/* Dev-only instant font switcher — never renders in production */}
       {import.meta.env.DEV && <FontSwitcher />}
 
-      {/* Scroll backgrounds — fixed, z-index: 1 */}
-      <ScrollBackgrounds />
+      {/* Scroll backgrounds — fixed, z-index: 1. Desktop only. */}
+      {!isMobile && (
+        <Suspense fallback={null}>
+          <ScrollBackgrounds />
+        </Suspense>
+      )}
 
       {/* Scroll container for creating long scroll */}
       <div className='scroll-container'>
         {/* Fixed logo in center of screen */}
         <div className='logo-container'>
-          <a
-            href='https://discord.com/invite/Panty-dungeon'
-            target='_blank'
-            rel='noopener noreferrer'
-            className='logo-link'
-          >
-            <img src='/logo.png' alt='TEKKEN RIVALS 2' className='logo' />
-          </a>
+          <h1 className='logo-title'>
+            <a
+              href='https://discord.com/invite/Panty-dungeon'
+              target='_blank'
+              rel='noopener noreferrer'
+              className='logo-link'
+            >
+              <img
+                src='/logo.png'
+                alt='TEKKEN RIVALS 2'
+                width={1511}
+                height={1041}
+                className='logo'
+              />
+            </a>
+          </h1>
         </div>
 
         {/* Poster 1 — Season Announcement */}
@@ -84,6 +101,8 @@ const AppContent: React.FC = () => {
             src='/tk_rival_poster4.jpg'
             placeholder='/thumb/tk_rival_poster4.jpg'
             alt='TEKKEN RIVALS 2 Season'
+            width={2480}
+            height={3508}
             className='poster-section__image'
             onClick={() =>
               setLightbox({
@@ -247,6 +266,8 @@ const AppContent: React.FC = () => {
             src='/photo_2026-07-25_20-53-50.jpg'
             placeholder='/thumb/photo_2026-07-25_20-53-50.jpg'
             alt='TEKKEN RIVALS 2 Formats'
+            width={1810}
+            height={2560}
             className='poster-section__image'
             onClick={() =>
               setLightbox({
@@ -281,6 +302,8 @@ const AppContent: React.FC = () => {
             src='/tekken_rivals2_styled_v3.png'
             placeholder='/thumb/tekken_rivals2_styled_v3.png'
             alt='TEKKEN RIVALS 2 Rules'
+            width={1280}
+            height={1031}
             className='poster-section__image'
             onClick={() =>
               setLightbox({
@@ -446,8 +469,11 @@ const AppContent: React.FC = () => {
               >
                 <img
                   src='/avicii75.webp'
-                  alt='AVICII75'
+                  alt='AVICII75 на Twitch'
+                  width={64}
+                  height={64}
                   loading='lazy'
+                  decoding='async'
                   className='easter-egg__avatar'
                 />
               </a>
@@ -459,8 +485,11 @@ const AppContent: React.FC = () => {
               >
                 <img
                   src='https://avatars.githubusercontent.com/u/88150316'
-                  alt='RXDCODX'
+                  alt='RXDCODX на GitHub'
+                  width={64}
+                  height={64}
                   loading='lazy'
+                  decoding='async'
                   className='easter-egg__avatar'
                 />
               </a>
