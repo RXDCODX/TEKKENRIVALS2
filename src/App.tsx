@@ -1,11 +1,13 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import AudioToggleButton from './components/AudioToggleButton';
+import ProgressiveImage from './components/ProgressiveImage';
+import FontSwitcher from './components/FontSwitcher';
+import Lightbox from './components/Lightbox';
+import PrimeDate from './components/PrimeDate';
+import ScrollBackgrounds from './components/ScrollBackgrounds';
+import SplitText from './components/SplitText';
 import { AudioProvider } from './contexts/AudioContext';
 import { useAudio } from './hooks/useAudio';
-import AudioToggleButton from './components/AudioToggleButton';
-import SplitText from './components/SplitText';
-import Lightbox from './components/Lightbox';
-import ScrollBackgrounds from './components/ScrollBackgrounds';
-import FontSwitcher from './components/FontSwitcher';
 
 const AppContent: React.FC = () => {
   const { setBackgroundMusic } = useAudio();
@@ -13,9 +15,33 @@ const AppContent: React.FC = () => {
   const [lightbox, setLightbox] = useState<{ src: string; alt: string } | null>(
     null
   );
+  const [ready, setReady] = useState(false);
+  const [showReportBtn, setShowReportBtn] = useState(false);
+
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    Promise.all([
+      document.fonts.ready,
+      new Promise<void>(resolve => {
+        if (document.readyState === 'complete') return resolve();
+        window.addEventListener('load', () => resolve(), { once: true });
+      }),
+    ]).then(() => {
+      setReady(true);
+      document.body.style.overflow = '';
+    });
+  }, []);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setShowReportBtn(true), 3000);
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <>
+      {/* Loading overlay — blocks scroll until page is ready */}
+      {!ready && <div className='loading-overlay' />}
+
       {/* Background music */}
       <audio
         ref={audio => {
@@ -24,9 +50,9 @@ const AppContent: React.FC = () => {
             setBackgroundMusic(audio);
           }
         }}
-        src='./sr.wav'
+        src='./sr.mp3'
         loop
-        preload='auto'
+        preload='metadata'
       />
 
       {/* Audio toggle button */}
@@ -42,13 +68,21 @@ const AppContent: React.FC = () => {
       <div className='scroll-container'>
         {/* Fixed logo in center of screen */}
         <div className='logo-container'>
-          <img src='/logo.png' alt='TEKKEN RIVALS 2' className='logo' />
+          <a
+            href='https://discord.com/invite/Panty-dungeon'
+            target='_blank'
+            rel='noopener noreferrer'
+            className='logo-link'
+          >
+            <img src='/logo.png' alt='TEKKEN RIVALS 2' className='logo' />
+          </a>
         </div>
 
         {/* Poster 1 — Season Announcement */}
         <div className='poster-section'>
-          <img
+          <ProgressiveImage
             src='/tk_rival_poster4.jpg'
+            placeholder='/thumb/tk_rival_poster4.jpg'
             alt='TEKKEN RIVALS 2 Season'
             className='poster-section__image'
             onClick={() =>
@@ -209,8 +243,9 @@ const AppContent: React.FC = () => {
               />
             </div>
           </div>
-          <img
+          <ProgressiveImage
             src='/photo_2026-07-25_20-53-50.jpg'
+            placeholder='/thumb/photo_2026-07-25_20-53-50.jpg'
             alt='TEKKEN RIVALS 2 Formats'
             className='poster-section__image'
             onClick={() =>
@@ -220,6 +255,183 @@ const AppContent: React.FC = () => {
               })
             }
           />
+        </div>
+
+        {/* Poster 3 — PRIME (rules + wizard + hollow + date + buttons) */}
+        <div className='poster-section poster-section--prime'>
+          <div className='prime-hollow'>
+            <svg viewBox='0 0 600 120' xmlns='http://www.w3.org/2000/svg'>
+              <text
+                x='50%'
+                y='50%'
+                dominantBaseline='middle'
+                textAnchor='middle'
+                fill='none'
+                stroke='#ffffff'
+                strokeWidth='1.5'
+                fontFamily='Anton, sans-serif'
+                fontSize='120'
+              >
+                PRIME
+              </text>
+            </svg>
+          </div>
+
+          <ProgressiveImage
+            src='/tekken_rivals2_styled_v3.png'
+            placeholder='/thumb/tekken_rivals2_styled_v3.png'
+            alt='TEKKEN RIVALS 2 Rules'
+            className='poster-section__image'
+            onClick={() =>
+              setLightbox({
+                src: '/tekken_rivals2_styled_v3.png',
+                alt: 'TEKKEN RIVALS 2 Rules',
+              })
+            }
+          />
+          <div className='poster-section__text poster-section__text--prime'>
+            <div className='prime-wizard'>
+              <div className='prime-wizard__header'>
+                <SplitText
+                  text='PRIME'
+                  tag='h2'
+                  splitType='chars'
+                  className='split-title'
+                  duration={1.5}
+                  delay={80}
+                />
+              </div>
+              <div className='prime-wizard__steps'>
+                <div className='prime-wizard__step'>
+                  <span className='prime-wizard__step-number'>1</span>
+                  <span className='prime-wizard__step-text'>
+                    Свободный вход
+                  </span>
+                </div>
+                <div className='prime-wizard__arrow' />
+                <div className='prime-wizard__step'>
+                  <span className='prime-wizard__step-number'>2</span>
+                  <span className='prime-wizard__step-text'>
+                    Зарабатывайте очки
+                  </span>
+                </div>
+                <div className='prime-wizard__arrow' />
+                <div className='prime-wizard__step'>
+                  <span className='prime-wizard__step-number'>3</span>
+                  <span className='prime-wizard__step-text'>
+                    Дойди до финалов
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <PrimeDate />
+
+            <div className='prime-buttons'>
+              <a
+                href='https://www.twitch.tv/avicii75'
+                target='_blank'
+                rel='noopener noreferrer'
+                className='prime-buttons__stream'
+              >
+                Стрим
+              </a>
+              <a
+                href='https://challonge.com/TR2P'
+                target='_blank'
+                rel='noopener noreferrer'
+                className='prime-buttons__register'
+              >
+                Регистрация
+              </a>
+            </div>
+          </div>
+        </div>
+
+        {/* Poster 4 — Scoring & Points */}
+        <div className='poster-section'>
+          <div className='poster-section__text poster-section__text--scoring'>
+            <div className='poster-section__title'>
+              <SplitText
+                text='TEKKEN RIVALS 2™ PRIME FINALS'
+                tag='h2'
+                splitType='chars'
+                className='split-title'
+                duration={1.5}
+                delay={80}
+              />
+            </div>
+            <div className='poster-section__scoring'>
+              <div className='poster-section__scoring-row'>
+                <span className='poster-section__scoring-place'>1 место</span>
+                <span className='poster-section__scoring-dots' />
+                <span className='poster-section__scoring-points'>11</span>
+              </div>
+              <div className='poster-section__scoring-row'>
+                <span className='poster-section__scoring-place'>2 место</span>
+                <span className='poster-section__scoring-dots' />
+                <span className='poster-section__scoring-points'>10</span>
+              </div>
+              <div className='poster-section__scoring-row'>
+                <span className='poster-section__scoring-place'>3 место</span>
+                <span className='poster-section__scoring-dots' />
+                <span className='poster-section__scoring-points'>8</span>
+              </div>
+              <div className='poster-section__scoring-row'>
+                <span className='poster-section__scoring-place'>4 место</span>
+                <span className='poster-section__scoring-dots' />
+                <span className='poster-section__scoring-points'>7</span>
+              </div>
+              <div className='poster-section__scoring-row'>
+                <span className='poster-section__scoring-place'>5-6 место</span>
+                <span className='poster-section__scoring-dots' />
+                <span className='poster-section__scoring-points'>6</span>
+              </div>
+              <div className='poster-section__scoring-row'>
+                <span className='poster-section__scoring-place'>7-8 место</span>
+                <span className='poster-section__scoring-dots' />
+                <span className='poster-section__scoring-points'>5</span>
+              </div>
+              <div className='poster-section__scoring-row'>
+                <span className='poster-section__scoring-place'>
+                  9-12 место
+                </span>
+                <span className='poster-section__scoring-dots' />
+                <span className='poster-section__scoring-points'>4</span>
+              </div>
+              <div className='poster-section__scoring-row'>
+                <span className='poster-section__scoring-place'>
+                  13-16 место
+                </span>
+                <span className='poster-section__scoring-dots' />
+                <span className='poster-section__scoring-points'>3</span>
+              </div>
+              <div className='poster-section__scoring-row'>
+                <span className='poster-section__scoring-place'>
+                  17-32 место
+                </span>
+                <span className='poster-section__scoring-dots' />
+                <span className='poster-section__scoring-points'>2</span>
+              </div>
+              <div className='poster-section__scoring-row'>
+                <span className='poster-section__scoring-place'>
+                  33 место и ниже
+                </span>
+                <span className='poster-section__scoring-dots' />
+                <span className='poster-section__scoring-points'>1</span>
+              </div>
+            </div>
+            <div className='poster-section__scoring-info'>
+              <SplitText
+                text='Топ 8 по итогам четырёх турниров попадают в TEKKEN RIVALS 2™ PRIME FINALS и сражаются по системе Round Robin.'
+                tag='p'
+                splitType='words'
+                duration={1}
+                delay={20}
+                textAlign='left'
+              />
+            </div>
+          </div>
         </div>
 
         {/* Easter egg at the very bottom */}
@@ -235,6 +447,7 @@ const AppContent: React.FC = () => {
                 <img
                   src='/avicii75.webp'
                   alt='AVICII75'
+                  loading='lazy'
                   className='easter-egg__avatar'
                 />
               </a>
@@ -247,6 +460,7 @@ const AppContent: React.FC = () => {
                 <img
                   src='https://avatars.githubusercontent.com/u/88150316'
                   alt='RXDCODX'
+                  loading='lazy'
                   className='easter-egg__avatar'
                 />
               </a>
@@ -261,6 +475,17 @@ const AppContent: React.FC = () => {
         isOpen={lightbox !== null}
         onClose={() => setLightbox(null)}
       />
+
+      {showReportBtn && (
+        <a
+          href='https://discord.com/invite/Panty-dungeon'
+          target='_blank'
+          rel='noopener noreferrer'
+          className='report-btn'
+        >
+          пожаловаться на шрифты
+        </a>
+      )}
     </>
   );
 };
