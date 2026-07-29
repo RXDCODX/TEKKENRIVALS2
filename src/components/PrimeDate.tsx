@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo } from 'react';
 
-const TOURNAMENT_DATE = new Date('2026-09-02T15:00:00+03:00');
+const TOURNAMENT_DATE = new Date('2026-08-02T15:00:00+03:00');
 
 interface TimeLeft {
   days: number;
