@@ -16,16 +16,24 @@
   opacity: 1;
 }
 
-.scroll-bg__layer--video {
-  opacity: 1;
+.video-cycler {
+  position: absolute;
+  inset: 0;
 }
 
-.scroll-bg__layer--video:not(.scroll-bg__layer--active) {
-  opacity: 0;
-}
-
-.scroll-bg__video {
+.video-cycler__video {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: opacity var(--crossfade-duration, 1.5s) ease;
+}
+
+.video-cycler__video--active {
+  opacity: 1;
+}
+
+.video-cycler__video--inactive {
+  opacity: 0;
 }

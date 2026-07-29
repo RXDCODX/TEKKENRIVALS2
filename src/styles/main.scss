@@ -185,7 +185,7 @@ body {
       flex-shrink: 0;
       position: relative;
       z-index: 1;
-      object-fit: cover;
+      object-fit: fill;
       height: auto;
       align-self: stretch;
     }
@@ -575,8 +575,7 @@ body {
     box-shadow:
       0 4px 15px rgba(0, 0, 0, 0.3),
       inset 0 1px 0 rgba(255, 255, 255, 0.05);
-    transition:
-      all 0.3s ease;
+    transition: all 0.3s ease;
 
     &:hover {
       transform: scale(1.05);

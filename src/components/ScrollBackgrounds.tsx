@@ -1,57 +1,26 @@
 import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import VideoCycler from './VideoCycler';
 
 import './ScrollBackgrounds.css';
 
 gsap.registerPlugin(ScrollTrigger);
 
 /*
- * Four fixed video layers with scroll-driven switching:
- *   [0] background.mp4 — intro (0-100vh) and easter egg (400-500vh)
+ * Five fixed video layers with scroll-driven switching:
+ *   [0] background.mp4 — intro (0-100vh) and easter egg
  *   [1] bg2.webm       — poster 1 zone (100-200vh)
  *   [2] bg3.webm       — poster 2 zone (200-300vh)
  *   [3] bg4.webm       — poster 3 zone (300-400vh)
+ *   [4] bg5.webm       — poster 4 / FINALS zone (400-500vh)
  */
 
-type ActiveLayer = 'video' | 'bg2' | 'bg3' | 'bg4';
+type ActiveLayer = 'video' | 'bg2' | 'bg3' | 'bg4' | 'bg5';
 
 const ScrollBackgrounds: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const bg2Ref = useRef<HTMLVideoElement>(null);
-  const bg3Ref = useRef<HTMLVideoElement>(null);
-  const bg4Ref = useRef<HTMLVideoElement>(null);
   const [activeLayer, setActiveLayer] = useState<ActiveLayer>('video');
-
-  const videoMap = { video: videoRef, bg2: bg2Ref, bg3: bg3Ref, bg4: bg4Ref };
-
-  // Play/pause based on active layer
-  useEffect(() => {
-    for (const [key, ref] of Object.entries(videoMap)) {
-      const el = ref.current;
-      if (!el) continue;
-      if (key === activeLayer && !document.hidden) {
-        void el.play().catch(() => {});
-      } else {
-        el.pause();
-      }
-    }
-  }, [activeLayer]);
-
-  // Visibility change
-  useEffect(() => {
-    const onVisibility = () => {
-      if (document.hidden) {
-        Object.values(videoMap).forEach(ref => ref.current?.pause());
-      } else {
-        const el = videoMap[activeLayer]?.current;
-        if (el) void el.play().catch(() => {});
-      }
-    };
-    document.addEventListener('visibilitychange', onVisibility);
-    return () => document.removeEventListener('visibilitychange', onVisibility);
-  }, [activeLayer]);
 
   // ScrollTrigger
   useEffect(() => {
@@ -69,7 +38,6 @@ const ScrollBackgrounds: React.FC = () => {
         const p1Top = posters[0].offsetTop;
         const p1H = posters[0].offsetHeight;
 
-        // bg2: activate when poster 1 enters, deactivate when it leaves
         ScrollTrigger.create({
           trigger: containerRef.current,
           start: clamp(p1Top - vh * 0.5),
@@ -85,7 +53,6 @@ const ScrollBackgrounds: React.FC = () => {
         const p2Top = posters[1].offsetTop;
         const p2H = posters[1].offsetHeight;
 
-        // bg3: activate when poster 2 enters, deactivate when it leaves
         ScrollTrigger.create({
           trigger: containerRef.current,
           start: clamp(p2Top - vh * 0.5),
@@ -101,7 +68,6 @@ const ScrollBackgrounds: React.FC = () => {
         const p3Top = posters[2].offsetTop;
         const p3H = posters[2].offsetHeight;
 
-        // bg4: activate when poster 3 enters
         ScrollTrigger.create({
           trigger: containerRef.current,
           start: clamp(p3Top - vh * 0.5),
@@ -115,15 +81,15 @@ const ScrollBackgrounds: React.FC = () => {
         const p4Top = posters[3].offsetTop;
         const p4H = posters[3].offsetHeight;
 
-        // video (background.mp4) for poster 4 — same as intro & easter egg
+        // bg5 (threads.webm) for poster 4 — PRIME FINALS
         ScrollTrigger.create({
           trigger: containerRef.current,
           start: clamp(p4Top - vh * 0.5),
           end: clamp(p4Top + p4H + vh * 0.2),
-          onEnter: () => setActiveLayer('video'),
+          onEnter: () => setActiveLayer('bg5'),
           onLeaveBack: () => setActiveLayer('bg4'),
           onLeave: () => setActiveLayer('video'),
-          onEnterBack: () => setActiveLayer('video'),
+          onEnterBack: () => setActiveLayer('bg5'),
         });
       }
 
@@ -147,81 +113,61 @@ const ScrollBackgrounds: React.FC = () => {
     return () => ctx.revert();
   }, []);
 
-  const forceRestart = (e: React.SyntheticEvent<HTMLVideoElement>) => {
-    const el = e.currentTarget;
-    el.currentTime = 0;
-    void el.play().catch(() => {});
-  };
-
   return (
     <div className='scroll-bg' ref={containerRef}>
-      {/* background.mp4 — intro + outro */}
+      {/* background.mp4 — intro + easter egg */}
       <div
-        className={`scroll-bg__layer scroll-bg__layer--video ${activeLayer === 'video' ? 'scroll-bg__layer--active' : ''}`}
+        className={`scroll-bg__layer ${activeLayer === 'video' ? 'scroll-bg__layer--active' : ''}`}
       >
-        <video
-          ref={videoRef}
-          className='scroll-bg__video'
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload='metadata'
-          onEnded={forceRestart}
-        >
-          <source src='./background.mp4' type='video/mp4' />
-        </video>
+        <VideoCycler
+          src='./background.mp4'
+          type='video/mp4'
+          isActive={activeLayer === 'video'}
+        />
       </div>
 
-      {/* bg2.webm — poster 1 */}
+      {/* bg2.webm — poster 1 (ferrofluid) */}
       <div
         className={`scroll-bg__layer ${activeLayer === 'bg2' ? 'scroll-bg__layer--active' : ''}`}
       >
-        <video
-          ref={bg2Ref}
-          className='scroll-bg__video'
-          muted
-          loop
-          playsInline
-          preload='metadata'
-          onEnded={forceRestart}
-        >
-          <source src='./bg2.webm' type='video/webm' />
-        </video>
+        <VideoCycler
+          src='./bg2.webm'
+          type='video/webm'
+          isActive={activeLayer === 'bg2'}
+        />
       </div>
 
-      {/* bg3.webm — poster 2 */}
+      {/* bg3.webm — poster 2 (dither) */}
       <div
         className={`scroll-bg__layer ${activeLayer === 'bg3' ? 'scroll-bg__layer--active' : ''}`}
       >
-        <video
-          ref={bg3Ref}
-          className='scroll-bg__video'
-          muted
-          loop
-          playsInline
-          preload='metadata'
-          onEnded={forceRestart}
-        >
-          <source src='./bg3.webm' type='video/webm' />
-        </video>
+        <VideoCycler
+          src='./bg3.webm'
+          type='video/webm'
+          isActive={activeLayer === 'bg3'}
+        />
       </div>
 
-      {/* bg4.webm — poster 3 */}
+      {/* bg4.webm — poster 3 (pixel snow) */}
       <div
         className={`scroll-bg__layer ${activeLayer === 'bg4' ? 'scroll-bg__layer--active' : ''}`}
       >
-        <video
-          ref={bg4Ref}
-          className='scroll-bg__video'
-          muted
-          loop
-          playsInline
-          preload='metadata'
-          onEnded={forceRestart}
-        >
-          <source src='./bg4.webm' type='video/webm' />
-        </video>
+        <VideoCycler
+          src='./bg4.webm'
+          type='video/webm'
+          isActive={activeLayer === 'bg4'}
+        />
+      </div>
+
+      {/* bg5.webm — poster 4 / FINALS (threads) */}
+      <div
+        className={`scroll-bg__layer ${activeLayer === 'bg5' ? 'scroll-bg__layer--active' : ''}`}
+      >
+        <VideoCycler
+          src='./bg5.webm'
+          type='video/webm'
+          isActive={activeLayer === 'bg5'}
+        />
       </div>
     </div>
   );
