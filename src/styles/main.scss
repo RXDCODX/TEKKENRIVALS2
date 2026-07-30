@@ -38,6 +38,20 @@ body {
   color: $text-color;
   font-family: var(--font-body);
   overflow-x: hidden;
+  text-shadow:
+    rgb(0 0 0) 2px 0 0,
+    rgb(0 0 0) 1.75517px 0.958851px 0,
+    rgb(0 0 0) 1.0806px 1.68294px 0,
+    rgb(0 0 0) 0.141474px 1.99499px 0,
+    rgb(0 0 0) -0.832294px 1.81859px 0,
+    rgb(0 0 0) -1.60229px 1.19694px 0,
+    rgb(0 0 0) -1.97998px 0.28224px 0,
+    rgb(0 0 0) -1.87291px -0.701566px 0,
+    rgb(0 0 0) -1.30729px -1.5136px 0,
+    rgb(0 0 0) -0.421592px -1.95506px 0,
+    rgb(0 0 0) 0.567324px -1.91785px 0,
+    rgb(0 0 0) 1.41734px -1.41108px 0,
+    rgb(0 0 0) 1.92034px -0.558831px 0;
 }
 
 // Loading overlay — blocks interaction until page is ready
@@ -171,7 +185,7 @@ body {
       flex-shrink: 0;
       position: relative;
       z-index: 1;
-      object-fit: cover;
+      object-fit: fill;
       height: auto;
       align-self: stretch;
     }
@@ -381,7 +395,21 @@ body {
     font-size: clamp(1.1rem, 2.8vw, 2rem);
     font-weight: 400;
     color: #fbbf24;
-    text-shadow: 0 0 12px rgba(251, 191, 36, 0.4);
+    text-shadow:
+      0 0 12px rgba(251, 191, 36, 0.4),
+      rgb(0 0 0) 2px 0 0,
+      rgb(0 0 0) 1.75517px 0.958851px 0,
+      rgb(0 0 0) 1.0806px 1.68294px 0,
+      rgb(0 0 0) 0.141474px 1.99499px 0,
+      rgb(0 0 0) -0.832294px 1.81859px 0,
+      rgb(0 0 0) -1.60229px 1.19694px 0,
+      rgb(0 0 0) -1.97998px 0.28224px 0,
+      rgb(0 0 0) -1.87291px -0.701566px 0,
+      rgb(0 0 0) -1.30729px -1.5136px 0,
+      rgb(0 0 0) -0.421592px -1.95506px 0,
+      rgb(0 0 0) 0.567324px -1.91785px 0,
+      rgb(0 0 0) 1.41734px -1.41108px 0,
+      rgb(0 0 0) 1.92034px -0.558831px 0;
     letter-spacing: 1px;
     flex-shrink: 0;
     min-width: 28px;
@@ -503,6 +531,27 @@ body {
   font-size: clamp(1rem, 2.5vw, 1.6rem);
   line-height: 1.8;
   color: rgba(255, 255, 255, 0.9);
+  cursor: default;
+  min-height: 5.4em;
+
+  &__countdown {
+    color: $accent-color;
+    text-shadow:
+      0 0 15px rgba(255, 0, 0, 0.4),
+      rgb(0 0 0) 2px 0 0,
+      rgb(0 0 0) 1.75517px 0.958851px 0,
+      rgb(0 0 0) 1.0806px 1.68294px 0,
+      rgb(0 0 0) 0.141474px 1.99499px 0,
+      rgb(0 0 0) -0.832294px 1.81859px 0,
+      rgb(0 0 0) -1.60229px 1.19694px 0,
+      rgb(0 0 0) -1.97998px 0.28224px 0,
+      rgb(0 0 0) -1.87291px -0.701566px 0,
+      rgb(0 0 0) -1.30729px -1.5136px 0,
+      rgb(0 0 0) -0.421592px -1.95506px 0,
+      rgb(0 0 0) 0.567324px -1.91785px 0,
+      rgb(0 0 0) 1.41734px -1.41108px 0,
+      rgb(0 0 0) 1.92034px -0.558831px 0;
+  }
 }
 
 // PRIME buttons — audio button style with colored accents
@@ -526,8 +575,7 @@ body {
     box-shadow:
       0 4px 15px rgba(0, 0, 0, 0.3),
       inset 0 1px 0 rgba(255, 255, 255, 0.05);
-    transition:
-      all 0.3s ease;
+    transition: all 0.3s ease;
 
     &:hover {
       transform: scale(1.05);

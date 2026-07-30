@@ -4,14 +4,14 @@ Single-page scroll-based promotional site for TEKKEN RIVALS 2 tournament series 
 
 ## Dev commands
 
-| Command | What it does |
-|---|---|
-| `yarn dev` | Vite dev server (default port 5173) |
-| `yarn build` | `tsc -b && vite build` |
-| `yarn type-check` | `tsc --noEmit` (no output = pass) |
-| `yarn lint` | ESLint (flat config, `--fix` available via `yarn lint:fix`) |
-| `yarn format` | Prettier `--write .` |
-| `yarn deploy` | Builds then deploys to gh-pages |
+| Command           | What it does                                                |
+| ----------------- | ----------------------------------------------------------- |
+| `yarn dev`        | Vite dev server (default port 5173)                         |
+| `yarn build`      | `tsc -b && vite build`                                      |
+| `yarn type-check` | `tsc --noEmit` (no output = pass)                           |
+| `yarn lint`       | ESLint (flat config, `--fix` available via `yarn lint:fix`) |
+| `yarn format`     | Prettier `--write .`                                        |
+| `yarn deploy`     | Builds then deploys to gh-pages                             |
 
 No test framework exists. No tests to run.
 
@@ -21,18 +21,18 @@ CI (`.github/workflows/`): `type-check -> lint -> build` on push to `master` (te
 
 The page is a 600vh scroll-container with absolutely positioned sections. Each zone has its own background video managed by `ScrollBackgrounds.tsx` via GSAP ScrollTrigger.
 
-| Zone | vh | Content | Image/Video |
-|---|---|---|---|
-| Intro | 0-100vh | Logo centered at 50vh | `background.mp4` |
-| Poster 1 | 100vh | Season announcement: prizes, upcoming events, donation/twitch links | `tk_rival_poster4.jpg` + `bg2.webm` |
-| Poster 2 | 200vh | Tournament formats: PRIME, TAG, STREAMER BATTLE, REGIONS, WORLDWIDE | `photo_2026-07-25_20-53-50.jpg` + `bg3.webm` |
-| Poster 3 | 300vh | PRIME rules: Double Elimination FT2, arena, WiFi ban, disqualification | `tekken_rivals2_styled_v3.png` + `bg4.webm` |
-| PRIME wizard | 375vh | 3-step wizard: Свободный вход → Зарабатывайте очки → Дойди до финалов | — |
-| PRIME hollow | 375vh | Large SVG "PRIME" text (white stroke, no fill) | — |
-| PRIME date | 400vh | "начало возни 02.09.2026 15:00" | — |
-| PRIME buttons | 425vh | "Стрим" (Twitch) + "Регистрация" (challonge.com/TR2P) | — |
-| Poster 4 | 500vh | Scoring & PRIME FINALS points table | — |
-| Easter egg | Bottom | Hidden AVICII75 + RXDCODX avatars (opacity 0.15, hover to reveal) | `avicii75.webp` |
+| Zone          | vh      | Content                                                                | Image/Video                                  |
+| ------------- | ------- | ---------------------------------------------------------------------- | -------------------------------------------- |
+| Intro         | 0-100vh | Logo centered at 50vh                                                  | `background.mp4`                             |
+| Poster 1      | 100vh   | Season announcement: prizes, upcoming events, donation/twitch links    | `tk_rival_poster4.jpg` + `bg2.webm`          |
+| Poster 2      | 200vh   | Tournament formats: PRIME, TAG, STREAMER BATTLE, REGIONS, WORLDWIDE    | `photo_2026-07-25_20-53-50.jpg` + `bg3.webm` |
+| Poster 3      | 300vh   | PRIME rules: Double Elimination FT2, arena, WiFi ban, disqualification | `tekken_rivals2_styled_v3.png` + `bg4.webm`  |
+| PRIME wizard  | 375vh   | 3-step wizard: Свободный вход → Зарабатывайте очки → Дойди до финалов  | —                                            |
+| PRIME hollow  | 375vh   | Large SVG "PRIME" text (white stroke, no fill)                         | —                                            |
+| PRIME date    | 400vh   | "начало возни 02.09.2026 15:00"                                        | —                                            |
+| PRIME buttons | 425vh   | "Стрим" (Twitch) + "Регистрация" (challonge.com/TR2P)                  | —                                            |
+| Poster 4      | 500vh   | Scoring & PRIME FINALS points table                                    | —                                            |
+| Easter egg    | Bottom  | Hidden AVICII75 + RXDCODX avatars (opacity 0.15, hover to reveal)      | `avicii75.webp`                              |
 
 ## Scoring system (PRIME FINALS)
 

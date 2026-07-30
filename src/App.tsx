@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import AudioToggleButton from './components/AudioToggleButton';
+import ProgressiveImage from './components/ProgressiveImage';
 import FontSwitcher from './components/FontSwitcher';
 import Lightbox from './components/Lightbox';
+import PrimeDate from './components/PrimeDate';
 import ScrollBackgrounds from './components/ScrollBackgrounds';
 import SplitText from './components/SplitText';
 import { AudioProvider } from './contexts/AudioContext';
@@ -48,9 +50,9 @@ const AppContent: React.FC = () => {
             setBackgroundMusic(audio);
           }
         }}
-        src='./sr.wav'
+        src='./sr.mp3'
         loop
-        preload='auto'
+        preload='metadata'
       />
 
       {/* Audio toggle button */}
@@ -72,14 +74,30 @@ const AppContent: React.FC = () => {
             rel='noopener noreferrer'
             className='logo-link'
           >
-            <img src='/logo.png' alt='TEKKEN RIVALS 2' className='logo' />
+            <picture>
+              <source
+                srcSet='/optimized/logo-400w.webp 400w, /optimized/logo-800w.webp 800w, /optimized/logo-1200w.webp 1200w'
+                sizes='(max-width: 768px) 60vw, 400px'
+                type='image/webp'
+              />
+              <source
+                srcSet='/optimized/logo-400w.jpg 400w, /optimized/logo-800w.jpg 800w, /optimized/logo-1200w.jpg 1200w'
+                sizes='(max-width: 768px) 60vw, 400px'
+                type='image/jpeg'
+              />
+              <img src='/logo.png' alt='TEKKEN RIVALS 2' className='logo' />
+            </picture>
           </a>
         </div>
 
         {/* Poster 1 — Season Announcement */}
         <div className='poster-section'>
-          <img
+          <ProgressiveImage
             src='/tk_rival_poster4.jpg'
+            placeholder='/thumb/tk_rival_poster4.jpg'
+            srcSetWebp='/optimized/tk_rival_poster4-400w.webp 400w, /optimized/tk_rival_poster4-800w.webp 800w, /optimized/tk_rival_poster4-1200w.webp 1200w'
+            srcSetJpeg='/optimized/tk_rival_poster4-400w.jpg 400w, /optimized/tk_rival_poster4-800w.jpg 800w, /optimized/tk_rival_poster4-1200w.jpg 1200w'
+            sizes='(max-width: 768px) 100vw, 380px'
             alt='TEKKEN RIVALS 2 Season'
             className='poster-section__image'
             onClick={() =>
@@ -240,8 +258,12 @@ const AppContent: React.FC = () => {
               />
             </div>
           </div>
-          <img
+          <ProgressiveImage
             src='/photo_2026-07-25_20-53-50.jpg'
+            placeholder='/thumb/photo_2026-07-25_20-53-50.jpg'
+            srcSetWebp='/optimized/photo_2026-07-25_20-53-50-400w.webp 400w, /optimized/photo_2026-07-25_20-53-50-800w.webp 800w, /optimized/photo_2026-07-25_20-53-50-1200w.webp 1200w'
+            srcSetJpeg='/optimized/photo_2026-07-25_20-53-50-400w.jpg 400w, /optimized/photo_2026-07-25_20-53-50-800w.jpg 800w, /optimized/photo_2026-07-25_20-53-50-1200w.jpg 1200w'
+            sizes='(max-width: 768px) 100vw, 380px'
             alt='TEKKEN RIVALS 2 Formats'
             className='poster-section__image'
             onClick={() =>
@@ -273,8 +295,12 @@ const AppContent: React.FC = () => {
             </svg>
           </div>
 
-          <img
+          <ProgressiveImage
             src='/tekken_rivals2_styled_v3.png'
+            placeholder='/thumb/tekken_rivals2_styled_v3.png'
+            srcSetWebp='/optimized/tekken_rivals2_styled_v3-400w.webp 400w, /optimized/tekken_rivals2_styled_v3-800w.webp 800w, /optimized/tekken_rivals2_styled_v3-1200w.webp 1200w'
+            srcSetJpeg='/optimized/tekken_rivals2_styled_v3-400w.jpg 400w, /optimized/tekken_rivals2_styled_v3-800w.jpg 800w, /optimized/tekken_rivals2_styled_v3-1200w.jpg 1200w'
+            sizes='(max-width: 768px) 100vw, 400px'
             alt='TEKKEN RIVALS 2 Rules'
             className='poster-section__image'
             onClick={() =>
@@ -320,13 +346,7 @@ const AppContent: React.FC = () => {
               </div>
             </div>
 
-            <div className='prime-date'>
-              начало возни
-              <br />
-              02.09.2026
-              <br />
-              15:00
-            </div>
+            <PrimeDate />
 
             <div className='prime-buttons'>
               <a
@@ -448,6 +468,7 @@ const AppContent: React.FC = () => {
                 <img
                   src='/avicii75.webp'
                   alt='AVICII75'
+                  loading='lazy'
                   className='easter-egg__avatar'
                 />
               </a>
@@ -460,6 +481,7 @@ const AppContent: React.FC = () => {
                 <img
                   src='https://avatars.githubusercontent.com/u/88150316'
                   alt='RXDCODX'
+                  loading='lazy'
                   className='easter-egg__avatar'
                 />
               </a>
