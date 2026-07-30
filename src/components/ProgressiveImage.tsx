@@ -8,6 +8,9 @@ interface ProgressiveImageProps {
   alt: string;
   className?: string;
   onClick?: () => void;
+  srcSetWebp?: string;
+  srcSetJpeg?: string;
+  sizes?: string;
 }
 
 const ProgressiveImage: React.FC<ProgressiveImageProps> = ({
@@ -16,6 +19,9 @@ const ProgressiveImage: React.FC<ProgressiveImageProps> = ({
   alt,
   className,
   onClick,
+  srcSetWebp,
+  srcSetJpeg,
+  sizes,
 }) => {
   const [loaded, setLoaded] = useState(false);
   const preloadedRef = useRef(false);
@@ -51,16 +57,31 @@ const ProgressiveImage: React.FC<ProgressiveImageProps> = ({
     }
   }, [src]);
 
-  const displaySrc = loaded ? src : placeholder;
+  if (!loaded) {
+    return (
+      <img
+        src={placeholder}
+        alt={alt}
+        className={`${className || ''} progressive-image__img progressive-image__img--blur`}
+        style={{ cursor: 'default' }}
+      />
+    );
+  }
 
   return (
-    <img
-      src={displaySrc}
-      alt={alt}
-      className={`${className || ''} progressive-image__img${loaded ? ' progressive-image__img--loaded' : ' progressive-image__img--blur'}`}
-      onClick={loaded ? onClick : undefined}
-      style={loaded ? {} : { cursor: 'default' }}
-    />
+    <picture>
+      {srcSetWebp && (
+        <source srcSet={srcSetWebp} sizes={sizes} type='image/webp' />
+      )}
+      <img
+        src={src}
+        srcSet={srcSetJpeg || undefined}
+        sizes={srcSetJpeg ? sizes : undefined}
+        alt={alt}
+        className={`${className || ''} progressive-image__img progressive-image__img--loaded`}
+        onClick={onClick}
+      />
+    </picture>
   );
 };
 

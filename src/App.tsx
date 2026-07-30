@@ -74,7 +74,19 @@ const AppContent: React.FC = () => {
             rel='noopener noreferrer'
             className='logo-link'
           >
-            <img src='/logo.png' alt='TEKKEN RIVALS 2' className='logo' />
+            <picture>
+              <source
+                srcSet='/optimized/logo-400w.webp 400w, /optimized/logo-800w.webp 800w, /optimized/logo-1200w.webp 1200w'
+                sizes='(max-width: 768px) 60vw, 400px'
+                type='image/webp'
+              />
+              <source
+                srcSet='/optimized/logo-400w.jpg 400w, /optimized/logo-800w.jpg 800w, /optimized/logo-1200w.jpg 1200w'
+                sizes='(max-width: 768px) 60vw, 400px'
+                type='image/jpeg'
+              />
+              <img src='/logo.png' alt='TEKKEN RIVALS 2' className='logo' />
+            </picture>
           </a>
         </div>
 
@@ -83,6 +95,9 @@ const AppContent: React.FC = () => {
           <ProgressiveImage
             src='/tk_rival_poster4.jpg'
             placeholder='/thumb/tk_rival_poster4.jpg'
+            srcSetWebp='/optimized/tk_rival_poster4-400w.webp 400w, /optimized/tk_rival_poster4-800w.webp 800w, /optimized/tk_rival_poster4-1200w.webp 1200w'
+            srcSetJpeg='/optimized/tk_rival_poster4-400w.jpg 400w, /optimized/tk_rival_poster4-800w.jpg 800w, /optimized/tk_rival_poster4-1200w.jpg 1200w'
+            sizes='(max-width: 768px) 100vw, 380px'
             alt='TEKKEN RIVALS 2 Season'
             className='poster-section__image'
             onClick={() =>
@@ -246,6 +261,9 @@ const AppContent: React.FC = () => {
           <ProgressiveImage
             src='/photo_2026-07-25_20-53-50.jpg'
             placeholder='/thumb/photo_2026-07-25_20-53-50.jpg'
+            srcSetWebp='/optimized/photo_2026-07-25_20-53-50-400w.webp 400w, /optimized/photo_2026-07-25_20-53-50-800w.webp 800w, /optimized/photo_2026-07-25_20-53-50-1200w.webp 1200w'
+            srcSetJpeg='/optimized/photo_2026-07-25_20-53-50-400w.jpg 400w, /optimized/photo_2026-07-25_20-53-50-800w.jpg 800w, /optimized/photo_2026-07-25_20-53-50-1200w.jpg 1200w'
+            sizes='(max-width: 768px) 100vw, 380px'
             alt='TEKKEN RIVALS 2 Formats'
             className='poster-section__image'
             onClick={() =>
@@ -280,6 +298,9 @@ const AppContent: React.FC = () => {
           <ProgressiveImage
             src='/tekken_rivals2_styled_v3.png'
             placeholder='/thumb/tekken_rivals2_styled_v3.png'
+            srcSetWebp='/optimized/tekken_rivals2_styled_v3-400w.webp 400w, /optimized/tekken_rivals2_styled_v3-800w.webp 800w, /optimized/tekken_rivals2_styled_v3-1200w.webp 1200w'
+            srcSetJpeg='/optimized/tekken_rivals2_styled_v3-400w.jpg 400w, /optimized/tekken_rivals2_styled_v3-800w.jpg 800w, /optimized/tekken_rivals2_styled_v3-1200w.jpg 1200w'
+            sizes='(max-width: 768px) 100vw, 400px'
             alt='TEKKEN RIVALS 2 Rules'
             className='poster-section__image'
             onClick={() =>
