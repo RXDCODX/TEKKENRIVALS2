@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import AudioToggleButton from './components/AudioToggleButton';
-import ProgressiveImage from './components/ProgressiveImage';
 import FontSwitcher from './components/FontSwitcher';
 import Lightbox from './components/Lightbox';
 import PrimeDate from './components/PrimeDate';
+import ProgressiveImage from './components/ProgressiveImage';
 import ScrollBackgrounds from './components/ScrollBackgrounds';
 import SplitText from './components/SplitText';
 import { AudioProvider } from './contexts/AudioContext';
@@ -447,6 +447,61 @@ const AppContent: React.FC = () => {
                 <img
                   src='/avicii75.webp'
                   alt='AVICII75'
+                  loading='lazy'
+                  className='easter-egg__avatar'
+                />
+              </a>
+              <a
+                href='https://t.me/anwearable'
+                target='_blank'
+                rel='noopener noreferrer'
+                className='easter-egg__avatar-link'
+              >
+                <img
+                  src='/antonan.jpg'
+                  alt='ANWEARABLE'
+                  loading='lazy'
+                  className='easter-egg__avatar'
+                />
+              </a>
+              <a
+                href='https://t.me/matory1911'
+                target='_blank'
+                rel='noopener noreferrer'
+                className='easter-egg__avatar-link'
+              >
+                <img
+                  src='/matory.jpg'
+                  alt='MATORY'
+                  loading='lazy'
+                  className='easter-egg__avatar'
+                />
+              </a>
+              <a
+                href='https://t.me/edeneleven'
+                target='_blank'
+                rel='noopener noreferrer'
+                className='easter-egg__avatar-link'
+              >
+                <video
+                  src='/edeneleven.mp4'
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  aria-label='EDENELEVEN'
+                  className='easter-egg__avatar'
+                />
+              </a>
+              <a
+                href='https://twitch.tv/iire1gn'
+                target='_blank'
+                rel='noopener noreferrer'
+                className='easter-egg__avatar-link'
+              >
+                <img
+                  src='/iireign.png'
+                  alt='IIREIGN'
                   loading='lazy'
                   className='easter-egg__avatar'
                 />
