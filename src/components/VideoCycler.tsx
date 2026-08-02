@@ -24,16 +24,17 @@ const VideoCycler: React.FC<VideoCyclerProps> = ({
   const lastSwapRef = useRef(0);
   const [isPrimary, setIsPrimary] = useState(true);
   const [fadeDuration, setFadeDuration] = useState(1.5);
+  const [hasSource, setHasSource] = useState(!deferLoad);
 
   useEffect(() => {
     const target = isPrimary ? videoARef.current : videoBRef.current;
     if (!target) return;
-    if (isActive && !document.hidden) {
+    if (isActive && hasSource && !document.hidden) {
       void target.play().catch(() => {});
     } else {
       target.pause();
     }
-  }, [isActive, isPrimary]);
+  }, [isActive, isPrimary, hasSource]);
 
   useEffect(() => {
     if (!deferLoad) return;
@@ -46,6 +47,7 @@ const VideoCycler: React.FC<VideoCyclerProps> = ({
       };
       setSrc(videoARef.current);
       setSrc(videoBRef.current);
+      setHasSource(true);
     };
 
     if ('requestIdleCallback' in window) {
