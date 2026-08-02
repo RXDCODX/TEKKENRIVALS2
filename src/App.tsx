@@ -62,7 +62,7 @@ const AppContent: React.FC = () => {
       {import.meta.env.DEV && <FontSwitcher />}
 
       {/* Scroll backgrounds — fixed, z-index: 1 */}
-      <ScrollBackgrounds />
+      <ScrollBackgrounds ready={ready} />
 
       {/* Scroll container for creating long scroll */}
       <div className='scroll-container'>

@@ -46,11 +46,17 @@ const videoMap: Record<ActiveLayer, { src: string; type: string }> = {
   bg5: { src: bg5, type: 'video/webm' },
 };
 
-const ScrollBackgrounds: React.FC = () => {
+const ScrollBackgrounds: React.FC<{ ready: boolean }> = ({ ready }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [activeLayer, setActiveLayer] = useState<ActiveLayer>('video');
 
   const mountedLayers = getMountedLayers(activeLayer);
+
+  // Until the document is ready only the main first background is mounted
+  const effectiveActive = ready ? activeLayer : 'video';
+  const effectiveMounted = ready
+    ? mountedLayers
+    : new Set<ActiveLayer>(['video']);
 
   // ScrollTrigger
   useEffect(() => {
@@ -148,13 +154,14 @@ const ScrollBackgrounds: React.FC = () => {
       {LAYER_ORDER.map(key => (
         <div
           key={key}
-          className={`scroll-bg__layer ${activeLayer === key ? 'scroll-bg__layer--active' : ''}`}
+          className={`scroll-bg__layer ${effectiveActive === key ? 'scroll-bg__layer--active' : ''}`}
         >
-          {mountedLayers.has(key) && (
+          {effectiveMounted.has(key) && (
             <VideoCycler
               src={videoMap[key].src}
               type={videoMap[key].type}
-              isActive={activeLayer === key}
+              isActive={effectiveActive === key}
+              deferLoad={key !== 'video'}
             />
           )}
         </div>
