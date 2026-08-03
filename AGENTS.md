@@ -31,7 +31,7 @@ The page is a 600vh scroll-container with absolutely positioned sections. Each z
 | PRIME hollow  | 375vh   | Large SVG "PRIME" text (white stroke, no fill)                         | —                                            |
 | PRIME date    | 400vh   | "начало возни 02.09.2026 15:00"                                        | —                                            |
 | PRIME buttons | 425vh   | "Стрим" (Twitch) + "Регистрация" (challonge.com/TR2P)                  | —                                            |
-| Poster 4      | 500vh   | Scoring & PRIME FINALS points table                                    | —                                            |
+| Poster 4      | 500vh   | Scoring & PRIME FINALS points table + "Результаты первого турнира" button | —                                            |
 | Easter egg    | Bottom  | Hidden AVICII75 + RXDCODX avatars (opacity 0.15, hover to reveal)      | `avicii75.webp`                              |
 
 ## Scoring system (PRIME FINALS)
@@ -48,6 +48,14 @@ Points by placement:
 ```
 
 Top 8 players across four tournaments qualify for PRIME FINALS (Round Robin format).
+
+## Tournament results modal (poster 4)
+
+The "Результаты первого турнира" button on poster 4 opens `PrimeResults` — a fullscreen `position: fixed; inset: 0; z-index: 2000` overlay rendered at the App root (next to `Lightbox`), with a full 108-player standings table (place/player/points) plus the scoring-system description and a link to the full Challonge bracket. It overlays on top of the page like the poster lightbox — do NOT render it inside the scroll flow/poster sections.
+
+- Data: `public/data/tr2p.json` (array of `{ name, place }`, computed from `challonge.com/TR2P` double-elimination bracket placements). Served statically, fetched at runtime — no API calls.
+- Points computed via `src/utils/scoring.ts` (`getPointsForRank`), ported from the TEKKENRIVALS mechanism.
+- Replaces `public/data/*.json` contents when the next tournament finishes (first tournament = `tr2p.json`).
 
 ## Architecture
 

@@ -1,0 +1,256 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  background: radial-gradient(
+      1200px 700px at 80% -10%,
+      rgba(255, 0, 0, 0.12),
+      transparent 60%
+    ),
+    linear-gradient(180deg, #161616, #000);
+  animation: fadeIn 0.25s ease;
+}
+
+.panel {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 44px 48px 36px;
+  overflow: hidden;
+}
+
+.close {
+  position: absolute;
+  top: 18px;
+  right: 24px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: 1.6rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    border-color: #ff0000;
+    box-shadow: 0 0 15px rgba(255, 0, 0, 0.4);
+    transform: scale(1.1);
+  }
+}
+
+.title {
+  padding-right: 56px;
+  margin-bottom: 22px;
+  font-family: var(--font-heading);
+  font-size: clamp(1.3rem, 3.5vw, 2.2rem);
+  letter-spacing: 2px;
+  text-align: center;
+}
+
+.body {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: 32px;
+  overflow: hidden;
+}
+
+.results {
+  min-height: 0;
+  overflow-y: auto;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-body);
+
+  thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    padding: 12px 16px;
+    background: #151515;
+    font-family: var(--font-heading);
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  }
+
+  tbody td {
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  tbody tr:hover {
+    background: rgba(255, 0, 0, 0.06);
+  }
+
+  tbody tr.clickable {
+    cursor: pointer;
+  }
+}
+
+.place {
+  width: 70px;
+  color: #fbbf24;
+  font-family: var(--font-title);
+  white-space: nowrap;
+}
+
+.name {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.points {
+  width: 60px;
+  color: #fbbf24;
+  font-family: var(--font-title);
+  text-align: right;
+}
+
+.status {
+  padding: 32px 24px;
+  color: rgba(255, 255, 255, 0.8);
+  font-family: var(--font-body);
+  text-align: center;
+
+  a {
+    color: #a855f7;
+    font-weight: 700;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.sidebar {
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow-y: auto;
+  padding-right: 4px;
+
+  h3 {
+    font-family: var(--font-heading);
+    font-size: clamp(0.95rem, 2vw, 1.2rem);
+    letter-spacing: 1px;
+    text-align: center;
+  }
+}
+
+.scoring {
+  display: flex;
+  flex-direction: column;
+  padding: 4px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.scoringRow {
+  display: flex;
+  align-items: baseline;
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.scoringPlace {
+  flex-shrink: 0;
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.85);
+  white-space: nowrap;
+}
+
+.scoringDots {
+  flex: 1;
+  align-self: center;
+  min-width: 12px;
+  margin: 0 8px;
+  border-bottom: 1px dotted rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+}
+
+.scoringPoints {
+  flex-shrink: 0;
+  color: #fbbf24;
+  font-family: var(--font-title);
+  font-size: 1rem;
+}
+
+.note {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.bracketLink {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #c94060;
+  text-decoration: none;
+  transition: opacity 0.3s ease;
+
+  &:hover {
+    opacity: 0.75;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .panel {
+    padding: 72px 20px 24px;
+  }
+
+  .body {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    overflow-y: auto;
+  }
+
+  .results {
+    overflow: visible;
+    border: none;
+    background: transparent;
+  }
+
+  .sidebar {
+    overflow: visible;
+  }
+}
