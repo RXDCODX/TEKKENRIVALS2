@@ -3,6 +3,8 @@ import AudioToggleButton from './components/AudioToggleButton';
 import FontSwitcher from './components/FontSwitcher';
 import Lightbox from './components/Lightbox';
 import PrimeDate from './components/PrimeDate';
+import PrimeIntro from './components/PrimeIntro';
+import PrimeResults from './components/PrimeResults';
 import ProgressiveImage from './components/ProgressiveImage';
 import ScrollBackgrounds from './components/ScrollBackgrounds';
 import SplitText from './components/SplitText';
@@ -12,11 +14,14 @@ import { useAudio } from './hooks/useAudio';
 const AppContent: React.FC = () => {
   const { setBackgroundMusic } = useAudio();
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const poster3Ref = useRef<HTMLDivElement>(null);
   const [lightbox, setLightbox] = useState<{ src: string; alt: string } | null>(
     null
   );
   const [ready, setReady] = useState(false);
   const [showReportBtn, setShowReportBtn] = useState(false);
+  const [introOpen, setIntroOpen] = useState(false);
+  const [resultsOpen, setResultsOpen] = useState(false);
 
   useEffect(() => {
     document.body.style.overflow = 'hidden';
@@ -258,7 +263,7 @@ const AppContent: React.FC = () => {
         </div>
 
         {/* Poster 3 — PRIME (rules + wizard + hollow + date + buttons) */}
-        <div className='poster-section poster-section--prime'>
+        <div className='poster-section poster-section--prime' ref={poster3Ref}>
           <div className='prime-hollow'>
             <svg viewBox='0 0 600 120' xmlns='http://www.w3.org/2000/svg'>
               <text
@@ -290,61 +295,67 @@ const AppContent: React.FC = () => {
             }
           />
           <div className='poster-section__text poster-section__text--prime'>
-            <div className='prime-wizard'>
-              <div className='prime-wizard__header'>
-                <SplitText
-                  text='PRIME'
-                  tag='h2'
-                  splitType='chars'
-                  className='split-title'
-                  duration={1.5}
-                  delay={80}
-                />
+            <div className='prime-intro-content'>
+              <div className='prime-wizard'>
+                <div className='prime-wizard__header'>
+                  <SplitText
+                    text='PRIME'
+                    tag='h2'
+                    splitType='chars'
+                    className='split-title'
+                    duration={1.5}
+                    delay={80}
+                  />
+                </div>
+                <div className='prime-wizard__steps'>
+                  <div className='prime-wizard__step'>
+                    <span className='prime-wizard__step-number'>1</span>
+                    <span className='prime-wizard__step-text'>
+                      Свободный вход
+                    </span>
+                  </div>
+                  <div className='prime-wizard__arrow' />
+                  <div className='prime-wizard__step'>
+                    <span className='prime-wizard__step-number'>2</span>
+                    <span className='prime-wizard__step-text'>
+                      Зарабатывайте очки
+                    </span>
+                  </div>
+                  <div className='prime-wizard__arrow' />
+                  <div className='prime-wizard__step'>
+                    <span className='prime-wizard__step-number'>3</span>
+                    <span className='prime-wizard__step-text'>
+                      Дойди до финалов
+                    </span>
+                  </div>
+                </div>
               </div>
-              <div className='prime-wizard__steps'>
-                <div className='prime-wizard__step'>
-                  <span className='prime-wizard__step-number'>1</span>
-                  <span className='prime-wizard__step-text'>
-                    Свободный вход
-                  </span>
-                </div>
-                <div className='prime-wizard__arrow' />
-                <div className='prime-wizard__step'>
-                  <span className='prime-wizard__step-number'>2</span>
-                  <span className='prime-wizard__step-text'>
-                    Зарабатывайте очки
-                  </span>
-                </div>
-                <div className='prime-wizard__arrow' />
-                <div className='prime-wizard__step'>
-                  <span className='prime-wizard__step-number'>3</span>
-                  <span className='prime-wizard__step-text'>
-                    Дойди до финалов
-                  </span>
-                </div>
+
+              <PrimeDate />
+
+              <div className='prime-buttons'>
+                <a
+                  href='https://www.twitch.tv/avicii75'
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  className='prime-buttons__stream'
+                >
+                  Стрим
+                </a>
+                <button
+                  type='button'
+                  className='prime-buttons__register'
+                  onClick={() => setIntroOpen(prev => !prev)}
+                >
+                  Интро
+                </button>
               </div>
             </div>
-
-            <PrimeDate />
-
-            <div className='prime-buttons'>
-              <a
-                href='https://www.twitch.tv/avicii75'
-                target='_blank'
-                rel='noopener noreferrer'
-                className='prime-buttons__stream'
-              >
-                Стрим
-              </a>
-              <a
-                href='https://challonge.com/TR2P'
-                target='_blank'
-                rel='noopener noreferrer'
-                className='prime-buttons__register'
-              >
-                Регистрация
-              </a>
-            </div>
+            <PrimeIntro
+              open={introOpen}
+              onClose={() => setIntroOpen(false)}
+              sectionRef={poster3Ref}
+            />
           </div>
         </div>
 
@@ -430,6 +441,15 @@ const AppContent: React.FC = () => {
                 delay={20}
                 textAlign='left'
               />
+            </div>
+            <div className='prime-buttons poster-section__results-btn'>
+              <button
+                type='button'
+                className='prime-buttons__results'
+                onClick={() => setResultsOpen(true)}
+              >
+                Результаты первого турнира
+              </button>
             </div>
           </div>
         </div>
@@ -530,6 +550,8 @@ const AppContent: React.FC = () => {
         isOpen={lightbox !== null}
         onClose={() => setLightbox(null)}
       />
+
+      <PrimeResults open={resultsOpen} onClose={() => setResultsOpen(false)} />
 
       {showReportBtn && (
         <a

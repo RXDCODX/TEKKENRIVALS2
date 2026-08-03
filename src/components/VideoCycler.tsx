@@ -28,13 +28,20 @@ const VideoCycler: React.FC<VideoCyclerProps> = ({
 
   useEffect(() => {
     const target = isPrimary ? videoARef.current : videoBRef.current;
-    if (!target) return;
-    if (isActive && hasSource && !document.hidden) {
-      void target.play().catch(() => {});
-    } else {
-      target.pause();
-    }
-  }, [isActive, isPrimary, hasSource]);
+    if (!target || !hasSource) return;
+    void target.play().catch(() => {});
+  }, [isPrimary, hasSource]);
+
+  useEffect(() => {
+    const onVisibility = () => {
+      if (document.hidden || !hasSource) return;
+      [videoARef.current, videoBRef.current].forEach(video => {
+        if (video) void video.play().catch(() => {});
+      });
+    };
+    document.addEventListener('visibilitychange', onVisibility);
+    return () => document.removeEventListener('visibilitychange', onVisibility);
+  }, [hasSource]);
 
   useEffect(() => {
     if (!deferLoad) return;

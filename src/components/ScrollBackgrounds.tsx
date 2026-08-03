@@ -26,17 +26,7 @@ type ActiveLayer = 'video' | 'bg2' | 'bg3' | 'bg4' | 'bg5';
 
 const LAYER_ORDER: ActiveLayer[] = ['video', 'bg2', 'bg3', 'bg4', 'bg5'];
 
-function getMountedLayers(active: ActiveLayer): Set<ActiveLayer> {
-  const i = LAYER_ORDER.indexOf(active);
-  const set = new Set<ActiveLayer>();
-  for (let d = -1; d <= 1; d++) {
-    const idx = i + d;
-    if (idx >= 0 && idx < LAYER_ORDER.length) {
-      set.add(LAYER_ORDER[idx]);
-    }
-  }
-  return set;
-}
+const ALL_LAYERS = new Set<ActiveLayer>(LAYER_ORDER);
 
 const videoMap: Record<ActiveLayer, { src: string; type: string }> = {
   video: { src: bg, type: 'video/mp4' },
@@ -50,13 +40,9 @@ const ScrollBackgrounds: React.FC<{ ready: boolean }> = ({ ready }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [activeLayer, setActiveLayer] = useState<ActiveLayer>('video');
 
-  const mountedLayers = getMountedLayers(activeLayer);
-
-  // Until the document is ready only the main first background is mounted
+  // All layers stay mounted and running; only visibility (opacity) switches.
   const effectiveActive = ready ? activeLayer : 'video';
-  const effectiveMounted = ready
-    ? mountedLayers
-    : new Set<ActiveLayer>(['video']);
+  const effectiveMounted = ALL_LAYERS;
 
   // ScrollTrigger
   useEffect(() => {
@@ -140,7 +126,7 @@ const ScrollBackgrounds: React.FC<{ ready: boolean }> = ({ ready }) => {
             start: fadeStart,
             end: fadeEnd,
             onEnter: () => setActiveLayer('video'),
-            onLeaveBack: () => setActiveLayer('video'),
+            onLeaveBack: () => setActiveLayer('bg5'),
           });
         }
       }
